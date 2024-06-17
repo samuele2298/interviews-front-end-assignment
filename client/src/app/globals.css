@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://rsms.me/inter/inter.css");
+
+html,
+body {
+  height: 100%;
+}
+
+/* Flexbox setup for full-height columns */
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex-grow: 1;
+  /* This makes main fill the remaining space */
+}
+
+/* Sticky footer styles */
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #1a202c;
+  /* Adjust as per your design */
+  color: white;
+  text-align: center;
+  padding: 1rem;
+}
+
+html {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
+}
+
+.gradient-background {
+  background-image: linear-gradient(135deg, #ff5f6d 0%, #ffc371 100%);
+}
+
+.gradient {
+  background-image: linear-gradient(135deg, #ff5f6d 0%, #ffc371 100%);
+}
+
+button,
+.gradient2 {
+  background-color: #ff5f6d;
+  background-image: linear-gradient(135deg, #ff5f6d 0%, #ffc371 100%);
+}
+
+.browser-mockup {
+  border-top: 2em solid rgba(230, 230, 230, 0.7);
+  position: relative;
+  height: 60vh;
+  background-color: white;
+  border: 1px solid #ff5f6d;
+  border-radius: 0.5em;
+}
+
+.browser-mockup:before {
+  display: block;
+  position: absolute;
+  content: "";
+  top: -1.25em;
+  left: 1em;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background-color: #ff5f6d;
+  box-shadow: 0 0 0 2px #ff5f6d, 1.5em 0 0 2px #ffc371, 3em 0 0 2px #ff5f6d;
+}
+
+.browser-mockup>* {
+  display: block;
+}
+
+.bg-primary {
+  background-color: #ff5f6d;
+}
+
+.text-primary {
+  color: #ff5f6d;
+}
+
+.text-secondary {
+  color: #ffc371;
+}
+
+.button-primary {
+  background-color: #ffffff;
+  color: #ff5f6d;
+}
+
+.button-primary:hover {
+  background-color: #f0f0f0;
+}
