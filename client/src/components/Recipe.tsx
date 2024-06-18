@@ -3,10 +3,10 @@
 // Recipe.tsx
 
 import React from 'react';
-import { Recipe as RecipeType } from '../utils/types'; // Importing the Recipe interface with an alias
+import { RecipeType } from '../types/api'; // Importing the Recipe interface with an alias
 
 interface RecipeProps {
-    recipe: RecipeType; // Using the RecipeType alias here
+    recipe: RecipeType;
 }
 
 const RecipeComponent: React.FC<RecipeProps> = ({ recipe }) => {

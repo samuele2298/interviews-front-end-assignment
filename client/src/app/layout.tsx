@@ -23,14 +23,7 @@ const RootLayout = ({ children }: RootLayoutProps) => {
                 <meta name="description" content={metadata.description} />
             </head>
             <body className={inter.className}>
-                <Navbar />
-                <main className="container mx-auto p-4">
-                    {children}
-                </main>
-                <footer className="bg-gray-800 text-white text-center p-4">
-                    © 2024 RecipeBookPro. All rights reserved. <br />
-                    <a href="/policy" className="underline">Privacy Policy</a>
-                </footer>
+                {children}
             </body>
         </html>
     );
