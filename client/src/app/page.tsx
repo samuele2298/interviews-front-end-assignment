@@ -1,44 +1,24 @@
 'use client'
+import React from 'react';
+import { useRouter } from 'next/navigation'
+const WelcomePage = () => {
+    const router = useRouter(); // Initialize the router
 
-import React, { useEffect, useState } from 'react';
-import { useRecipeStore } from '../store/recipeStore';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import '../styles/home.css';
-
-
-const HomePage = () => {
-    const { recipes, getRecipes } = useRecipeStore();
-
-    useEffect(() => {
-        getRecipes(1);
-    }, [getRecipes]);
-
-
-    const goToPreviousRecipe = () => {
-        //setCurrentRecipeIndex(currentRecipeIndex === 0 ? recipesData.length - 1 : currentRecipeIndex - 1);
-    };
-
-    const goToNextRecipe = () => {
-        //setCurrentRecipeIndex((currentRecipeIndex + 1) % recipesData.length);
+    const handleExploreClick = () => {
+        router.push('/recipe');
     };
 
     return (
-        <div>
-            <h1>Recipes</h1>
-            <ul>
-                {recipes.map((recipe) => (
-                    <li key={recipe.id}>
-                        <h2>{recipe.name}</h2>
-                        <p>Ingredients: {recipe.ingredients.join(', ')}</p>
-                        <p>Instructions: {recipe.instructions}</p>
-                        <p>Image: {recipe.image}</p>
-                    </li>
-                ))}
-            </ul>
+        <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-blue-500 to-purple-500">
+            <h1 className="text-6xl font-bold text-white mb-8">Recipe for u</h1>
+            <button
+                onClick={handleExploreClick}
+                className="bg-gradient-to-r from-yellow-400 to-red-500 text-white px-6 py-3 rounded-full shadow-md hover:scale-105 transform transition duration-300"
+            >
+                Explore
+            </button>
         </div>
     );
 };
-//<Recipe recipe={recipes[currentRecipeIndex]} />
 
-export default HomePage;
-
+export default WelcomePage;

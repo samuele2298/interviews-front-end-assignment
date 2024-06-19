@@ -10,9 +10,9 @@ import {
     CuisineType,
     DifficultyType,
     DietType,
-    CommentType,
     RecipeType,
-    RecipeFilterType
+    RecipeFilterType,
+    CommentType
 } from '../types/api';
 
 import { recipeStoreType } from '../types/state';
@@ -20,16 +20,18 @@ import { RecipeFormType, CommentFormType, } from '../types/form';
 
 export const useRecipeStore = create<recipeStoreType>((set, get) => ({
     recipes: [] as RecipeType[],
+    recipe: null,
     cuisines: [] as CuisineType[],
     difficulties: [] as DifficultyType[],
     diets: [] as DietType[],
-    comments: [] as CommentType[],
+    isLoadingRecipes: true,
+
 
     setRecipes: (recipes) => set({ recipes }),
+    setRecipe: (recipe) => set({ recipe }),
     setCuisines: (cuisines: CuisineType[]) => set({ cuisines }),
     setDifficulties: (difficulties) => set({ difficulties }),
     setDiets: (diets) => set({ diets }),
-    setComments: (comments) => set({ comments }),
 
     //GET
     async getRecipes(recipeRequest: RecipeFilterType) {
@@ -38,14 +40,26 @@ export const useRecipeStore = create<recipeStoreType>((set, get) => ({
             .get(`${URL}/recipes`, { params: { recipeRequest } })
             .then(({ data }) => setRecipes(data))
             .catch((error) => console.error('Error fetching recipes:', error))
+            .finally(() => set({ isLoadingRecipes: false }));
+
     },
 
-    async getCommentsByRecipeId(recipeId) {
-        const { setComments } = get();
-        axios
-            .get(`${URL}/recipes/${recipeId}/comments`)
-            .then(({ data }) => setComments(data))
-            .catch((error) => console.error('Error fetching comments:', error))
+    async getRecipe(id: string) {
+        try {
+            const response = await axios.get(`${URL}/recipes/${id}`);
+            const recipe = response.data;
+
+            const commentsResponse = await axios.get(`${URL}/recipes/${id}/comments`);
+            const comments = commentsResponse.data;
+
+            // Merge comments into recipe object
+            recipe.comments = comments;
+
+            set({ recipe });
+        } catch (error) {
+            console.error('Error fetching recipe:', error);
+        }
+
     },
 
     async getDifficulties() {
@@ -95,6 +109,7 @@ export const useRecipeStore = create<recipeStoreType>((set, get) => ({
             return new Blob(); // Return an empty Blob on error
         }
     },
+
 
 
     //POST
