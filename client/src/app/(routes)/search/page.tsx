@@ -1,21 +1,16 @@
 'use client'
 import { useState, useEffect } from 'react';
-import { useRecipeStore } from '@/store/recipeStore'; // Adjust import path based on your project structure
+import { useSearchStore } from '@/store/searchStore'; // Adjust import path based on your project structure
 import { RecipeFilterType } from '@/types/api';
 import Navbar from '@/components/Navbar';
 import RecipeSearchCard from '@/components/RecipeSearchCard';
+import { useRecipeStore } from '@/store/recipeStore';
 
 const RecipesSearchPage = () => {
-    const { recipes, getRecipes, difficulties, diets, cuisines, getCuisines, getDiets, getDifficulties } = useRecipeStore();
-    const [filters, setFilters] = useState<RecipeFilterType>({
-        _page: 1,
-        _limit: 10,
-        q: '',
-        cuisineId: '',
-        dietId: '',
-        difficultyId: '',
-        _expand: [],
-    });
+    const { searchResults, getResults, filter, setFilter } = useSearchStore();
+    const { difficulties, diets, cuisines, getCuisines, getDiets, getDifficulties } = useRecipeStore();
+
+    const [filters, setFilters] = useState<RecipeFilterType>(filter);
 
     useEffect(() => {
         // Initial fetches for filters
@@ -27,23 +22,26 @@ const RecipesSearchPage = () => {
 
     useEffect(() => {
         // Fetch recipes when filters change
-        getRecipes(filters);
-    }, [filters, getRecipes]);
+        getResults();
+    }, [filters, getResults]);
 
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setFilters((prevFilters) => ({
+
+        // Update setFilter directly with the new filter value
+        setFilters((prevFilters: RecipeFilterType) => ({
             ...prevFilters,
             [name]: value,
         }));
+
+        setFilter(filters)
     };
 
     const handleSearch = () => {
-        console.log('Q FACTOR ' + filters.q);
-        getRecipes(filters);
-
-        console.log('length ' + recipes[0].name);
-
+        console.log('Q FACTOR ' + filter.q);
+        getResults();
+        console.log('length ' + searchResults.length);
+        console.log('first ' + searchResults[0].name);
     };
 
 
@@ -71,7 +69,7 @@ const RecipesSearchPage = () => {
                         <div>
                             <label className="block font-semibold">Cuisine</label>
                             {cuisines.map(cuisine => (
-                                <div key={cuisine.id} className="flex items-center">
+                                <div key={cuisine.id} className="flex items-center space-x-2 ml-4">
                                     <input
                                         type="checkbox"
                                         id={cuisine.id}
@@ -79,7 +77,7 @@ const RecipesSearchPage = () => {
                                         value={cuisine.id}
                                         checked={filters.cuisineId === cuisine.id}
                                         onChange={handleFilterChange}
-                                        className="mr-2"
+                                        className="text-blue-500 focus:ring-blue-500 h-4 w-4 rounded border-gray-300"
                                     />
                                     <label htmlFor={cuisine.id}>{cuisine.name}</label>
                                 </div>
@@ -89,7 +87,7 @@ const RecipesSearchPage = () => {
                         <div>
                             <label className="block font-semibold">Diet Preference</label>
                             {diets.map(diet => (
-                                <div key={diet.id} className="flex items-center">
+                                <div key={diet.id} className="flex items-center space-x-2 ml-4">
                                     <input
                                         type="checkbox"
                                         id={diet.id}
@@ -97,7 +95,7 @@ const RecipesSearchPage = () => {
                                         value={diet.id}
                                         checked={filters.dietId === diet.id}
                                         onChange={handleFilterChange}
-                                        className="mr-2"
+                                        className="text-blue-500 focus:ring-blue-500 h-4 w-4 rounded border-gray-300"
                                     />
                                     <label htmlFor={diet.id}>{diet.name}</label>
                                 </div>
@@ -107,7 +105,7 @@ const RecipesSearchPage = () => {
                         <div>
                             <label className="block font-semibold">Difficulty Level</label>
                             {difficulties.map(difficulty => (
-                                <div key={difficulty.id} className="flex items-center">
+                                <div key={difficulty.id} className="flex items-center space-x-2 ml-4">
                                     <input
                                         type="checkbox"
                                         id={difficulty.id}
@@ -115,7 +113,7 @@ const RecipesSearchPage = () => {
                                         value={difficulty.id}
                                         checked={filters.difficultyId === difficulty.id}
                                         onChange={handleFilterChange}
-                                        className="mr-2"
+                                        className="text-blue-500 focus:ring-blue-500 h-4 w-4 rounded border-gray-300"
                                     />
                                     <label htmlFor={difficulty.id}>{difficulty.name}</label>
                                 </div>
@@ -130,13 +128,14 @@ const RecipesSearchPage = () => {
                             Search
                         </button>
                     </div>
+
                 </div>
                 {/* Right Section: Vertically Stacked Recipes List */}
                 <div className="flex-1 p-4 overflow-y-auto">
                     <div className="max-w-5xl mx-auto">
                         {/* Recipes List */}
                         <div className="space-y-4">
-                            {recipes.map(recipe => (
+                            {searchResults.map(recipe => (
                                 <div key={recipe.id}>
                                     <RecipeSearchCard recipe={recipe} />
                                 </div>

@@ -1,7 +1,6 @@
 'use client'
 
-import { useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRecipeStore } from '@/store/recipeStore'; // Adjust import path based on your project structure
 import { RecipeFormType } from '@/types/form';
@@ -9,7 +8,15 @@ import Navbar from '@/components/Navbar';
 
 const AddRecipe = () => {
     const router = useRouter();
-    const { addRecipe, difficulties, cuisines, diets } = useRecipeStore();
+    const { addRecipe, difficulties, cuisines, diets,
+        getCuisines, getDiets, getDifficulties } = useRecipeStore();
+
+    useEffect(() => {
+        getDiets();
+        getCuisines();
+        getDifficulties();
+    }, [getDiets, getCuisines, getDifficulties]);
+
 
     const [recipeForm, setRecipeForm] = useState<RecipeFormType>({
         name: '',
@@ -18,7 +25,7 @@ const AddRecipe = () => {
         cuisineId: '',
         dietId: '',
         difficultyId: '',
-        image: '',
+        image: 'fgdgdgfgd',
     });
     const [errors, setErrors] = useState({
         name: '',
@@ -38,14 +45,13 @@ const AddRecipe = () => {
         }));
     };
 
-    const handleChangeCuisine = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleChangeTag = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = e.target;
         setRecipeForm(prev => ({
             ...prev,
             [name]: value,
         }));
     };
-
 
     const handleIngredientChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const newIngredients = [...recipeForm.ingredients];
@@ -56,6 +62,7 @@ const AddRecipe = () => {
         }));
     };
 
+    //INGRADIENTS
     const handleAddIngredient = () => {
         setRecipeForm(prev => ({
             ...prev,
@@ -72,8 +79,36 @@ const AddRecipe = () => {
         }));
     };
 
+
+    //IMAGE
+
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        //handleFileUpload(file);
+    };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+    };
+
+    const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+    };
+
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+    };
+
+    const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files && e.target.files[0];
+        //handleFileUpload(file);
+    };
+
+    //SUBMIT
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        console.log(recipeForm);
 
         try {
             // Basic form validation
@@ -100,34 +135,9 @@ const AddRecipe = () => {
         }
     };
 
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        const file = e.dataTransfer.files[0];
-        //handleFileUpload(file);
-    };
-
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-    };
-
-    const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-    };
-
-    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-    };
-
-    const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files && e.target.files[0];
-        //handleFileUpload(file);
-    };
-
     return (
         <div>
             <Navbar />
-
-
             <div className="max-w-3xl mx-auto mt-8">
                 <h1 className="text-3xl font-bold mb-4">Add New Recipe</h1>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -182,16 +192,53 @@ const AddRecipe = () => {
                             id="cuisineId"
                             name="cuisineId"
                             value={recipeForm.cuisineId}
-                            onChange={handleChangeCuisine}
+                            onChange={handleChangeTag}
                             className={`w-full border border-gray-300 rounded px-3 py-2 focus:outline-none ${errors.cuisineId && 'border-red-500'}`}
                         >
                             <option value="">Select Cuisine</option>
                             {cuisines.map(cuisine => (
-                                <option key={cuisine.id} value={cuisine.name}>{cuisine.name}</option>
+                                <option key={cuisine.id} value={cuisine.id}>{cuisine.name}</option>
                             ))}
                         </select>
                         {errors.cuisineId && <p className="text-red-500">{errors.cuisineId}</p>}
                     </div>
+
+
+                    <div>
+                        <label htmlFor="dietId" className="block font-semibold">Diet</label>
+                        <select
+                            id="dietId"
+                            name="dietId"
+                            value={recipeForm.dietId}
+                            onChange={handleChangeTag}
+                            className={`w-full border border-gray-300 rounded px-3 py-2 focus:outline-none ${errors.dietId && 'border-red-500'}`}
+                        >
+                            <option value="">Select Diet</option>
+                            {diets.map(diet => (
+                                <option key={diet.id} value={diet.id}>{diet.name}</option>
+                            ))}
+                        </select>
+                        {errors.cuisineId && <p className="text-red-500">{errors.dietId}</p>}
+                    </div>
+
+
+                    <div>
+                        <label htmlFor="difficultyId" className="block font-semibold">Difficulty</label>
+                        <select
+                            id="difficultyId"
+                            name="difficultyId"
+                            value={recipeForm.difficultyId}
+                            onChange={handleChangeTag}
+                            className={`w-full border border-gray-300 rounded px-3 py-2 focus:outline-none ${errors.difficultyId && 'border-red-500'}`}
+                        >
+                            <option value="">Select Difficulty</option>
+                            {difficulties.map(difficulty => (
+                                <option key={difficulty.id} value={difficulty.id}>{difficulty.name}</option>
+                            ))}
+                        </select>
+                        {errors.cuisineId && <p className="text-red-500">{errors.difficultyId}</p>}
+                    </div>
+
 
 
                     <div

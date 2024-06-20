@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
         const limit = _limit ? parseInt(_limit as string, 10) : 10;
 
         // Filter recipes based on query parameters
-        let filteredRecipes: RecipeType[] = [...db.recipes]; // Copy recipes array from db.json
+        var filteredRecipes: RecipeType[] = [...db.recipes]; // Copy recipes array from db.json
 
         if (q) {
             // Perform full text search filtering (assuming 'q' filters by recipe name or similar)
@@ -96,10 +96,17 @@ export async function GET(req: NextRequest) {
     }
 }
 
+
+
 // POST Handler
 export async function POST(req: NextRequest) {
     try {
+        //console.log('Received JSON:', req.json());
+
+
         const newRecipe: RecipeType = await req.json();
+        console.log('Received JSON:', newRecipe);
+
         const recipes: RecipeType[] = db.recipes;
 
         // Add the new recipe

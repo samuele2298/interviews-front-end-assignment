@@ -48,7 +48,9 @@ export interface RecipeType {
     dietId: string;
     difficultyId: string;
     image: string;
-    comments: CommentType[];
+
+
+    comments?: CommentType[];
 
 
     //Optional type for the expand_  

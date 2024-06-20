@@ -10,10 +10,12 @@ const writeToDB = (data: CommentType[]) => {
 };
 
 // GET Handler to fetch comments for a specific recipe
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
     try {
-        const { searchParams } = new URL(req.url);
-        const id = searchParams.get('id');
+        const { id } = params; // Destructure 'id' from params
+
+        //const { searchParams } = new URL(req.url);
+        //const id = searchParams.get('id');
         if (!id) {
             return NextResponse.json({ error: 'Recipe ID is required' }, { status: 400 });
         }
@@ -28,6 +30,8 @@ export async function GET(req: NextRequest) {
 
 // POST Handler to add a new comment to a specific recipe
 export async function POST(req: NextRequest) {
+
+
     try {
         const { searchParams } = new URL(req.url);
         const id = searchParams.get('id');

@@ -2,67 +2,112 @@ import create from 'zustand';
 import axios from 'axios';
 
 //const URL = 'http://localhost:3000';
-const URL = 'api';
+const URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000/api';
+
 const DOWNLOAD_FOLDER = '../../src/upload_images';
-const RECIPE_LIMIT = 10;
+const LIMIT = 10;
 
 import {
     CuisineType,
     DifficultyType,
     DietType,
     RecipeType,
-    RecipeFilterType,
-    CommentType
+    CommentType,
 } from '../types/api';
 
-import { recipeStoreType } from '../types/state';
+
+export interface recipeStoreType {
+    //State
+    page: Number
+    recipe: RecipeType | null;
+    recipes: RecipeType[] | [];
+    cuisines: CuisineType[] | [];
+    difficulties: DifficultyType[] | [];
+    diets: DietType[] | [];
+    hasMore: Boolean,
+    isLoading: Boolean,
+
+
+    //Setter functions
+    setPage: (page: Number) => void;
+    setRecipe: (recipe: RecipeType) => void;
+    setRecipes: (recipes: RecipeType[]) => void;
+    setCuisines: (cuisines: CuisineType[]) => void;
+    setDifficulties: (difficulties: DifficultyType[]) => void;
+    setDiets: (diets: DietType[]) => void;
+    setHasMore: (hasMore: Boolean) => void;
+    setIsLoading: (isLoading: Boolean) => void;
+
+
+    //Getter functions
+    getDifficulties: () => void;
+    getCuisines: () => void;
+    getDiets: () => void;
+    getRecipes: () => Promise<void>;
+    getImage: (imageName: string) => Promise<Blob>;
+    getRecipe: (id: string) => void;
+
+    addComment: (recipeId: string, commentForm: CommentFormType) => void;
+    addRecipe: (recipe: RecipeFormType) => void;
+}
+
+
 import { RecipeFormType, CommentFormType, } from '../types/form';
 
 export const useRecipeStore = create<recipeStoreType>((set, get) => ({
-    recipes: [] as RecipeType[],
+    page: 1,
     recipe: null,
+    recipes: [] as RecipeType[],
     cuisines: [] as CuisineType[],
     difficulties: [] as DifficultyType[],
     diets: [] as DietType[],
-    isLoadingRecipes: true,
+    hasMore: true,
+    isLoading: true,
 
 
+    setPage: (page) => set({ page }),
     setRecipes: (recipes) => set({ recipes }),
     setRecipe: (recipe) => set({ recipe }),
     setCuisines: (cuisines: CuisineType[]) => set({ cuisines }),
-    setDifficulties: (difficulties) => set({ difficulties }),
-    setDiets: (diets) => set({ diets }),
+    setDifficulties: (difficulties: DifficultyType[]) => set({ difficulties }),
+    setDiets: (diets: DietType[]) => set({ diets }),
+
+    setHasMore: (hasMore) => set({ hasMore }),
+    setIsLoading: (isLoading) => set({ isLoading }),
 
     //GET
-    async getRecipes(recipeRequest: RecipeFilterType) {
-        const { setRecipes } = get();
+    async getRecipes() {
+        const { page, setRecipes } = get();
         axios
-            .get(`${URL}/recipes`, { params: { recipeRequest } })
+            .get(`${URL}/recipes?_page=${page}&_per_page=${LIMIT}`)
             .then(({ data }) => setRecipes(data))
             .catch((error) => console.error('Error fetching recipes:', error))
-            .finally(() => set({ isLoadingRecipes: false }));
+            .finally(() => set({ isLoading: false }));
 
     },
 
     async getRecipe(id: string) {
+        const { setRecipe } = get();
+
         try {
             const response = await axios.get(`${URL}/recipes/${id}`);
             const recipe = response.data;
 
             const commentsResponse = await axios.get(`${URL}/recipes/${id}/comments`);
-            const comments = commentsResponse.data;
+            const comments: CommentType[] = commentsResponse.data;
 
             // Merge comments into recipe object
             recipe.comments = comments;
 
-            set({ recipe });
+            setRecipe(recipe);
+
         } catch (error) {
             console.error('Error fetching recipe:', error);
         }
 
     },
 
-    async getDifficulties() {
+    getDifficulties() {
         const { setDifficulties } = get();
         axios
             .get(`${URL}/difficulties`)
@@ -70,7 +115,7 @@ export const useRecipeStore = create<recipeStoreType>((set, get) => ({
             .catch((error) => console.error('Error fetching difficulties:', error))
     },
 
-    async getCuisines() {
+    getCuisines() {
         const { setCuisines } = get();
         axios
             .get(`${URL}/cuisines`)
@@ -78,7 +123,7 @@ export const useRecipeStore = create<recipeStoreType>((set, get) => ({
             .catch((error) => console.error('Error fetching cuisines:', error))
     },
 
-    async getDiets() {
+    getDiets() {
         const { setDiets } = get();
         axios
             .get(`${URL}/diets`)
@@ -122,16 +167,13 @@ export const useRecipeStore = create<recipeStoreType>((set, get) => ({
             formData.append('cuisineId', recipeForm.cuisineId);
             formData.append('dietId', recipeForm.dietId);
             formData.append('difficultyId', recipeForm.difficultyId);
-            if (typeof recipeForm.image === 'string') {
-                formData.append('image', recipeForm.image);
-            } else {
-                formData.append('image', recipeForm.image);
-            }
+            formData.append('image', recipeForm.image);
+
 
             axios
                 .post(`${URL}/recipes`, formData, {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        'Content-Type': 'multipart/form-data', // Use multipart/form-data for FormData
                     },
                 })
                 .then(({ data }) => console.log('Recipe added successfully:', data))
@@ -149,37 +191,4 @@ export const useRecipeStore = create<recipeStoreType>((set, get) => ({
 
 }));
 
-// Usage example:
-// In your component where you want to use the store:
-// import { useRecipeStore } from './store';
-
-// Example usage in a React component:
-/*
-const MyComponent = () => {
-    const { recipes, getRecipes, cuisines, getCuisines } = useRecipeStore();
-
-    useEffect(() => {
-        // Fetch recipes on component mount
-        getRecipes(1); // Fetch recipes from page 1
-        getCuisines(); // Fetch cuisines
-    }, []);
-
-    return (
-        <div>
-            <h1>Recipes</h1>
-            <ul>
-                {recipes.map(recipe => (
-                    <li key={recipe.id}>{recipe.name}</li>
-                ))}
-            </ul>
-            <h1>Cuisines</h1>
-            <ul>
-                {cuisines.map(cuisine => (
-                    <li key={cuisine.id}>{cuisine.name}</li>
-                ))}
-            </ul>
-        </div>
-    );
-};
-*/
 
