@@ -12,8 +12,11 @@ const writeToDB = (data: RecipeType[]) => {
 
 export async function GET(req: NextRequest) {
     try {
-        // Extract query parameters from the request
+
+        // Extract query parameters from the request URL
         const searchParams = new URL(req.nextUrl).searchParams;
+
+        // Extract individual query parameters
         const _page = searchParams.get('_page');
         const _limit = searchParams.get('_limit');
         const q = searchParams.get('q');
@@ -22,6 +25,13 @@ export async function GET(req: NextRequest) {
         const difficultyId = searchParams.get('difficultyId');
         const _expand = searchParams.getAll('_expand');
 
+        console.log('_page:', _page);
+        console.log('_limit:', _limit);
+        console.log('q:', q);
+        console.log('cuisineId:', cuisineId);
+        console.log('dietId:', dietId);
+        console.log('difficultyId:', difficultyId);
+        console.log('_expand:', _expand);
 
         // Convert _page and _limit to numbers, with defaults if not provided
         const page = _page ? parseInt(_page as string, 10) : 1;

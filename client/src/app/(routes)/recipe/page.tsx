@@ -46,19 +46,21 @@ const RecipViewPage = () => {
                     {isLoading ? (
                         <p className="text-xl text-gray-600">Loading recipes...</p>
                     ) : (
-                        <div className="w-full h-full bg-white rounded-xl p-8 flex flex-col items-center relative justify-center">
-                            {totalRecipes > 0 && (
+                        <div className="w-full h-full bg-white  flex flex-col items-center relative justify-center">
+                            {totalRecipes > 0 ? (
                                 <>
                                     <FaChevronLeft
-                                        className="absolute left-0 top-1/2 transform -translate-y-1/2 cursor-pointer text-3xl text-gray-500 hover:text-gray-700"
+                                        className="absolute left-2 top-1/2 transform -translate-y-1/2 cursor-pointer text-3xl text-orange-500 hover:text-orange-700"
                                         onClick={goToPreviousRecipe}
                                     />
                                     <Recipe recipe={recipes[currentRecipeIndex]} />
                                     <FaChevronRight
-                                        className="absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer text-3xl text-gray-500 hover:text-gray-700"
+                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer text-3xl text-orange-500 hover:text-orange-700"
                                         onClick={goToNextRecipe}
                                     />
                                 </>
+                            ) : (
+                                <p className="text-gray-500 text-xl">No recipes present</p>
                             )}
                         </div>
                     )}

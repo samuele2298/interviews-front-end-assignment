@@ -5,6 +5,7 @@ import { RecipeFilterType } from '@/types/api';
 import Navbar from '@/components/Navbar';
 import RecipeSearchCard from '@/components/RecipeSearchCard';
 import { useRecipeStore } from '@/store/recipeStore';
+//import '@/styles/style.css';
 
 const RecipesSearchPage = () => {
     const { searchResults, getResults, filter, setFilter } = useSearchStore();
@@ -17,13 +18,11 @@ const RecipesSearchPage = () => {
         getCuisines();
         getDiets();
         getDifficulties();
-    }, [getCuisines, getDiets, getDifficulties]);
 
+        getResults(filters);
 
-    useEffect(() => {
-        // Fetch recipes when filters change
-        getResults();
-    }, [filters, getResults]);
+    }, [getCuisines, getDiets, getDifficulties, filters, getResults]);
+
 
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -34,17 +33,34 @@ const RecipesSearchPage = () => {
             [name]: value,
         }));
 
-        setFilter(filters)
+        //setFilter(filters)
     };
 
     const handleSearch = () => {
-        console.log('Q FACTOR ' + filter.q);
-        getResults();
-        console.log('length ' + searchResults.length);
-        console.log('first ' + searchResults[0].name);
+        getResults(filters);
     };
 
+    const handleReset = () => {
 
+        setFilters({
+            _page: 1,
+            _limit: 10,
+            q: '',
+            cuisineId: '',
+            dietId: '',
+            difficultyId: '',
+            _expand: [],
+        });
+        setFilter({
+            _page: 1,
+            _limit: 10,
+            q: '',
+            cuisineId: '',
+            dietId: '',
+            difficultyId: '',
+            _expand: [],
+        });
+    };
 
     return (
         <div>
@@ -66,10 +82,12 @@ const RecipesSearchPage = () => {
                             />
                         </div>
 
+
                         <div>
-                            <label className="block font-semibold">Cuisine</label>
+
+                            <label className="block font-semibold">Cuisine Preference</label>
                             {cuisines.map(cuisine => (
-                                <div key={cuisine.id} className="flex items-center space-x-2 ml-4">
+                                <div key={cuisine.name} className="flex items-center space-x-2 ml-4">
                                     <input
                                         type="checkbox"
                                         id={cuisine.id}
@@ -77,17 +95,19 @@ const RecipesSearchPage = () => {
                                         value={cuisine.id}
                                         checked={filters.cuisineId === cuisine.id}
                                         onChange={handleFilterChange}
+
                                         className="text-blue-500 focus:ring-blue-500 h-4 w-4 rounded border-gray-300"
                                     />
-                                    <label htmlFor={cuisine.id}>{cuisine.name}</label>
+                                    <label>{cuisine.name}</label>
                                 </div>
                             ))}
                         </div>
 
                         <div>
+
                             <label className="block font-semibold">Diet Preference</label>
                             {diets.map(diet => (
-                                <div key={diet.id} className="flex items-center space-x-2 ml-4">
+                                <div key={diet.name} className="flex items-center space-x-2 ml-4">
                                     <input
                                         type="checkbox"
                                         id={diet.id}
@@ -97,7 +117,7 @@ const RecipesSearchPage = () => {
                                         onChange={handleFilterChange}
                                         className="text-blue-500 focus:ring-blue-500 h-4 w-4 rounded border-gray-300"
                                     />
-                                    <label htmlFor={diet.id}>{diet.name}</label>
+                                    <label >{diet.name}</label>
                                 </div>
                             ))}
                         </div>
@@ -115,7 +135,7 @@ const RecipesSearchPage = () => {
                                         onChange={handleFilterChange}
                                         className="text-blue-500 focus:ring-blue-500 h-4 w-4 rounded border-gray-300"
                                     />
-                                    <label htmlFor={difficulty.id}>{difficulty.name}</label>
+                                    <label >{difficulty.name}</label>
                                 </div>
                             ))}
                         </div>
@@ -123,9 +143,17 @@ const RecipesSearchPage = () => {
                         <button
                             type="button"
                             onClick={handleSearch}
-                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                            className="ml-2 px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
                         >
                             Search
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={handleReset}
+                            className="ml-2 px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+                        >
+                            Reset
                         </button>
                     </div>
 

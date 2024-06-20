@@ -1,12 +1,7 @@
 import create from 'zustand';
 import axios from 'axios';
-
-//const URL = 'http://localhost:3000';
-const URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000/api';
-
-const DOWNLOAD_FOLDER = '../../src/upload_images';
-const LIMIT = 10;
-
+import { RecipeFormType, CommentFormType, } from '../types/form';
+import { recipeStoreType } from '@/types/state';
 import {
     CuisineType,
     DifficultyType,
@@ -15,44 +10,13 @@ import {
     CommentType,
 } from '../types/api';
 
+//const URL = 'http://localhost:3000';
+const URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000/api';
 
-export interface recipeStoreType {
-    //State
-    page: Number
-    recipe: RecipeType | null;
-    recipes: RecipeType[] | [];
-    cuisines: CuisineType[] | [];
-    difficulties: DifficultyType[] | [];
-    diets: DietType[] | [];
-    hasMore: Boolean,
-    isLoading: Boolean,
+const DOWNLOAD_FOLDER = '../../src/upload_images';
+const LIMIT = 10;
 
 
-    //Setter functions
-    setPage: (page: Number) => void;
-    setRecipe: (recipe: RecipeType) => void;
-    setRecipes: (recipes: RecipeType[]) => void;
-    setCuisines: (cuisines: CuisineType[]) => void;
-    setDifficulties: (difficulties: DifficultyType[]) => void;
-    setDiets: (diets: DietType[]) => void;
-    setHasMore: (hasMore: Boolean) => void;
-    setIsLoading: (isLoading: Boolean) => void;
-
-
-    //Getter functions
-    getDifficulties: () => void;
-    getCuisines: () => void;
-    getDiets: () => void;
-    getRecipes: () => Promise<void>;
-    getImage: (imageName: string) => Promise<Blob>;
-    getRecipe: (id: string) => void;
-
-    addComment: (recipeId: string, commentForm: CommentFormType) => void;
-    addRecipe: (recipe: RecipeFormType) => void;
-}
-
-
-import { RecipeFormType, CommentFormType, } from '../types/form';
 
 export const useRecipeStore = create<recipeStoreType>((set, get) => ({
     page: 1,

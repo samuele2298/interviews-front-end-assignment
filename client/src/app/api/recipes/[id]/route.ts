@@ -32,13 +32,3 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 
-export default function DetailsPage({
-    params: { id },
-}: {
-    params: {
-        id: string;
-    }
-}) {
-
-
-}

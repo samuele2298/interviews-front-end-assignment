@@ -10,7 +10,6 @@ export interface RecipeFormType {
 }
 
 export interface CommentFormType {
-    recipeId: string
     comment: string;
     rating: number;
     date: string;

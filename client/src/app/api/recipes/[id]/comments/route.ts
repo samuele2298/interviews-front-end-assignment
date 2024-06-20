@@ -29,12 +29,13 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 // POST Handler to add a new comment to a specific recipe
-export async function POST(req: NextRequest) {
 
-
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
     try {
-        const { searchParams } = new URL(req.url);
-        const id = searchParams.get('id');
+
+        const { id } = params; // Destructure 'id' from params
+
+
         if (!id) {
             return NextResponse.json({ error: 'Recipe ID is required' }, { status: 400 });
         }

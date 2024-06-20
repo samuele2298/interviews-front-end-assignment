@@ -1,28 +1,40 @@
 'use client'
 import { CommentType } from '../types/api';
+import { FaStar } from 'react-icons/fa';
+import { format } from 'date-fns';
+import { it } from 'date-fns/locale';
 
 interface CommentsProps {
     comments: CommentType[];
 }
 
 const Comments: React.FC<CommentsProps> = ({ comments }) => {
+    const formatDate = (dateString: string) => {
+        return format(new Date(dateString), 'dd MMMM yyyy', { locale: it });
+    };
 
     return (
-        <div className="w-full h-full  p-6 bg-white ">
+        <div className="w-full h-full p-6 bg-white">
             <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">Comments</h2>
             <ul className="space-y-4">
                 {comments?.map(comment => (
-                    <li key={comment.id} className="border p-4 rounded-lg shadow-md">
-                        <p className="text-gray-800">{comment.comment}</p>
-                        <p className="text-gray-600">Rating: {comment.rating}</p>
-                        <p className="text-gray-600">Date: {comment.date}</p>
+                    <li key={comment.id} className="border p-6 rounded-lg shadow-md space-y-4">
+                        <p className="text-gray-800 text-lg">{comment.comment}</p>
+                        <div className="flex items-center space-x-2">
+                            {Array.from({ length: 5 }, (_, index) => (
+                                <FaStar
+                                    key={index}
+                                    className={`text-2xl ${index < comment.rating ? 'text-yellow-500' : 'text-gray-300'}`}
+                                />
+                            ))}
+                        </div>
+                        <p className="text-gray-600 text-sm">{formatDate(comment.date)}</p>
                     </li>
                 ))}
                 {comments?.length === 0 && (
                     <li className="text-gray-600 text-center">No comments yet.</li>
                 )}
             </ul>
-
         </div>
     );
 };

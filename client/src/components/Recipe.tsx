@@ -24,11 +24,9 @@ const RecipeComponent: React.FC<RecipeProps> = ({ recipe }) => {
     };
 
     return (
-
-        <div className="bg-white rounded-lg p-14 md:p-16 w-full flex flex-col md:flex-row items-center justify-center">
-
+        <div className="flex flex-wrap md:flex-nowrap items-center p-4 md:p-8">
             {/* Recipe Image */}
-            <div className="md:w-1/3 mb-4 md:mb-0 flex justify-center">
+            <div className="w-full md:w-1/2 lg:w-1/2 mb-4 md:mb-0 flex justify-center">
                 <div className="relative w-full h-0" style={{ paddingBottom: '100%' }}>
                     <img
                         src={`/upload_images/${recipe.image}`}
@@ -38,22 +36,30 @@ const RecipeComponent: React.FC<RecipeProps> = ({ recipe }) => {
                 </div>
             </div>
             {/* Recipe Details */}
-            <div className="md:w-2/3 md:pl-12 flex flex-col justify-center">
+            <div className="w-full md:w-1/2 lg:w-1/2 md:pl-8 flex flex-col justify-center">
                 {/* Recipe Title */}
                 <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 text-center md:text-left">
                     {recipe.name}
                 </h1>
                 {/* Tags (Cuisine, Difficulty, Diets) */}
-                <div className="flex flex-wrap mb-6">
-                    <span className="bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm mr-2 mb-2">
+                <div className="flex flex-wrap md:flex-row mb-6 justify-center md:justify-start">
+                    <span
+                        className="bg-orange-500 text-white px-6 py-2 md:py-4 rounded-full shadow-md hover:scale-105 transform transition duration-300 mr-2 mb-2"
+                        style={{ background: 'orange', color: 'white' }}
+                    >
                         Cuisine: {cuisines.find(cuisine => cuisine.id === recipe.cuisineId)?.name}
                     </span>
-                    <span className="bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm mr-2 mb-2">
+                    <span
+                        className="bg-orange-500 text-white px-6 py-2 md:py-4 rounded-full shadow-md hover:scale-105 transform transition duration-300 mr-2 mb-2"
+                        style={{ background: 'orange', color: 'white' }}
+                    >
                         Difficulty: {difficulties.find(difficulty => difficulty.id === recipe.difficultyId)?.name}
-
                     </span>
-                    <span className="bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm mr-2 mb-2">
-                        Diet:  {diets.find(diet => diet.id === recipe.dietId)?.name}
+                    <span
+                        className="bg-orange-500 text-white px-6 py-2 md:py-4 rounded-full shadow-md hover:scale-105 transform transition duration-300 mr-2 mb-2"
+                        style={{ background: 'orange', color: 'white' }}
+                    >
+                        Diet: {diets.find(diet => diet.id === recipe.dietId)?.name}
                     </span>
                 </div>
                 {/* Ingredients */}
@@ -74,13 +80,18 @@ const RecipeComponent: React.FC<RecipeProps> = ({ recipe }) => {
                 <div className="flex justify-start">
                     <button
                         onClick={handleDetailClick}
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-md shadow-md transition duration-300"
+                        className="bg-white text-orange-500 px-8 py-4 rounded-full shadow-md hover:scale-105 transform transition duration-300"
+                        style={{ background: 'orange', color: 'white' }}
                     >
                         View Details
                     </button>
                 </div>
             </div>
         </div>
+
+
+
+
 
 
     );

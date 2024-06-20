@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import RecipeDetail from "@/components/RecipeDetail";
 import AddComments from "@/components/AddComment";
 import Navbar from "@/components/Navbar";
+import Skeleton from "@/components/Skeleton";
 
 export default function DetailsPage({
     params: { id },
@@ -39,18 +40,27 @@ export default function DetailsPage({
 
 
 
-    if (isLoading) {
-        return <p>Loading...</p>; // Show loading indicator while fetching recipe
+    if (isLoading || !recipe) {
+        return (
+
+            <Skeleton />
+
+            /*     <div>
+                    <Navbar />
+                    <h1 className=" top-0 left-0 flex flex-col items-start justify-start p-4 text-4xl text-gray-900">
+                        Loading...
+                    </h1>
+                </div> */
+        );
     }
 
-    if (!recipe) {
-        return <p>Recipe not found</p>; // Optional: handle case where recipe is not found
-    }
+
     return (
         <div>
             <Navbar />
 
-            <div className="min-h-screen bg-gray-100">
+
+            <div className=" bg-gray-100">
                 <RecipeDetail recipe={recipe} />
 
                 {/* Check if recipe.comments is empty or null */}
@@ -61,17 +71,11 @@ export default function DetailsPage({
                 ) : (
                     <div className="mt-8 flex flex-col items-center justify-center">
                         <h2 className="text-xl font-semibold text-gray-800 mb-4">No comments yet</h2>
-                        {/* Optionally, you can add a button or message to encourage adding comments */}
-                        {/* <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md shadow-md transition duration-300">
-                            Add a Comment
-                        </button> */}
                     </div>
                 )}
                 {/* Add commment section */}
+                <AddComments recipeId={id} />
 
-                <div className="min-h-screen">
-                    <AddComments recipeId={id} />
-                </div>
             </div>
         </div>
     );

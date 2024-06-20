@@ -1,15 +1,19 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRecipeStore } from '@/store/recipeStore'; // Adjust import path based on your project structure
 import { RecipeFormType } from '@/types/form';
 import Navbar from '@/components/Navbar';
+import FormRow from '@/components/FormRow';
+import FormLabel from '@/components/FormLabel';
+import { useDropzone } from 'react-dropzone';
 
 const AddRecipe = () => {
     const router = useRouter();
     const { addRecipe, difficulties, cuisines, diets,
         getCuisines, getDiets, getDifficulties } = useRecipeStore();
+
 
     useEffect(() => {
         getDiets();
@@ -81,29 +85,20 @@ const AddRecipe = () => {
 
 
     //IMAGE
+    const onDrop = useCallback((acceptedFiles: Array<File>) => {
+        const file = new FileReader;
 
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        const file = e.dataTransfer.files[0];
-        //handleFileUpload(file);
-    };
+        file.onload = function () {
+            setPreview(file.result);
+        }
 
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-    };
+        file.readAsDataURL(acceptedFiles[0])
+    }, [])
+    const { acceptedFiles, getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop
+    });
+    const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
 
-    const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-    };
-
-    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-    };
-
-    const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files && e.target.files[0];
-        //handleFileUpload(file);
-    };
 
     //SUBMIT
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -119,11 +114,14 @@ const AddRecipe = () => {
             if (!recipeForm.cuisineId) validationErrors.cuisineId = 'Cuisine is required';
             if (!recipeForm.dietId) validationErrors.dietId = 'Diet is required';
             if (!recipeForm.difficultyId) validationErrors.difficultyId = 'Difficulty level is required';
-            if (!recipeForm.image) validationErrors.image = 'Image is required';
+            if (!acceptedFiles || acceptedFiles.length === 0) validationErrors.image = 'Image is required';
 
+
+            // If there are validation errors, handle them appropriately
             if (Object.keys(validationErrors).length > 0) {
-                setErrors(validationErrors);
-                return;
+                // Handle validation errors (e.g., show error messages)
+                console.error('Validation errors:', validationErrors);
+                return; // Exit early if there are validation errors
             }
 
             addRecipe(recipeForm);
@@ -241,24 +239,24 @@ const AddRecipe = () => {
 
 
 
-                    <div
-                        className={`border-dashed border-2 border-gray-300 rounded-lg p-8 text-center ${errors.image && 'border-red-500'}`}
-                        onDrop={handleDrop}
-                        onDragOver={handleDragOver}
-                        onDragEnter={handleDragEnter}
-                        onDragLeave={handleDragLeave}
-                    >
-                        <label htmlFor="image" className="block font-semibold">Drag & Drop or Click to Upload Image</label>
-                        <input
-                            type="file"
-                            id="image"
-                            name="image"
-                            accept="image/*"
-                            onChange={handleFileInputChange}
-                            className="hidden"
-                        />
-                        <p className="mt-2">Supported file types: JPEG, PNG, GIF</p>
-                    </div>
+                    <FormRow className="mb-5">
+                        <FormLabel htmlFor="image">Image</FormLabel>
+                        <div {...getRootProps()}>
+                            <input {...getInputProps()} />
+                            {
+                                isDragActive ?
+                                    <p>Drop the files here ...</p> :
+                                    <p>Drag 'n' drop some files here, or click to select files</p>
+                            }
+                        </div>
+                    </FormRow>
+
+                    {preview && (
+                        <p className="mb-5">
+                            <img src={preview as string} alt="Upload preview" />
+                        </p>
+                    )}
+
 
                     <button type="submit" className="w-full mt-4 px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200">Add Recipe</button>
                 </form>
