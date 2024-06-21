@@ -14,8 +14,8 @@ const Comments: React.FC<CommentsProps> = ({ comments }) => {
     };
 
     return (
-        <div className="w-full h-full p-6 bg-white">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">Comments</h2>
+        <div className="w-full h-full p-8 bg-white rounded-lg shadow-lg ml-2">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4 text-left ml-3">Comments:</h2>
             <ul className="space-y-4">
                 {comments?.map(comment => (
                     <li key={comment.id} className="border p-6 rounded-lg shadow-md space-y-4">

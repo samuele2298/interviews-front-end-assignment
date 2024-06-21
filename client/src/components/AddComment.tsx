@@ -44,10 +44,13 @@ const AddComments: React.FC<AddCommentsProps> = ({ recipeId }) => {
     };
 
     return (
-        <div className="w-full h-full p-8 bg-white rounded-lg shadow-lg">
+        <div className="w-full h-full p-8 bg-white rounded-lg shadow-lg mr-2">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4 text-left ml-3">Leave a comment:</h2>
+
             <div className="mt-4">
-                <form onSubmit={handleSubmit} className="flex flex-row space-y-4 w-full">
-                    <div className="w-full">
+                <form onSubmit={handleSubmit} className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 items-start w-full">
+
+                    <div className="w-full md:w-2/3">
                         <label className="block text-gray-800 mb-2">Comment:</label>
                         <input
                             type="text"
@@ -57,7 +60,7 @@ const AddComments: React.FC<AddCommentsProps> = ({ recipeId }) => {
                             className="border border-gray-300 rounded w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
-                    <div className="w-full md:ml-20">
+                    <div className="w-full md:w-1/3">
                         <label className="block text-gray-800 mb-2">Rating:</label>
                         <div className="flex justify-start space-x-1"> {/* Adjusted to justify-start */}
                             {[1, 2, 3, 4, 5].map((star) => (
@@ -69,15 +72,19 @@ const AddComments: React.FC<AddCommentsProps> = ({ recipeId }) => {
                             ))}
                         </div>
                     </div>
+
+                    {/* Submit Button */}
                     <button
                         type="submit"
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-md shadow-md transition duration-300 w-1/5 md:w-1/4 mx-auto block"
+                        className="bg-white text-orange-500 px-8 py-2 font-bold rounded-full shadow-md hover:scale-105 transform transition duration-300 mt-6 md:mt-0"
+
                     >
                         Submit
                     </button>
                 </form>
             </div>
         </div>
+
     );
 };
 

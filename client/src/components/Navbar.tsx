@@ -17,7 +17,7 @@ const Navbar = () => {
         router.push('/search');
     };
     return (
-        <nav className="bg-gradient-to-r from-orange-400 to-yellow-300 p-2 flex justify-between items-center">
+        <nav className="bg-white p-2 flex justify-between items-center">
 
             <div className="flex items-center">
                 {/* Left Column for Logo */}
@@ -29,8 +29,8 @@ const Navbar = () => {
                 <div className="flex items-center space-x-6">
                     <button
                         onClick={handleViewPage}
-                        className="bg-transparent text-white px-6 py-3 rounded-full  text-3xl font-bold"
-                        style={{ background: 'transparent', color: 'white' }}
+                        className="bg-transparent text-orange-500 px-6 py-3 rounded-full  text-3xl font-bold"
+                        style={{ background: 'transparent', color: 'orange' }}
 
                     >
                         Recipe4U
