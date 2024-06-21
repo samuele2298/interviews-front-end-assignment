@@ -1,45 +1,26 @@
 
-# RecipeBook
+# Recipe4U
 
-Questo progetto e' stato una bella sfida che mi ha insegnato tanto e non vedo l'ora di parlarne con voi.
-
-RecipeBook è una applicazione community-driven per la condivisione di ricette. Gli utenti possono navigare tra le ricette, aggiungere nuove ricette, lasciare commenti e valutazioni. L'applicazione consente agli utenti di cercare ricette per ingredienti o cucina e di filtrare i risultati in base alle preferenze dietetiche.
-
-
-## API Reference
-
-#### Get all items
-
-```http
-https://recipeapi.up.railway.app/recipes
-https://recipeapi.up.railway.app/comments
-https://recipeapi.up.railway.app/cuisines
-https://recipeapi.up.railway.app/difficulties
-https://recipeapi.up.railway.app/diets
-
-GET POST PUT PATCH DELETE OPTIONS
-
-```
-
-
+Per questo progetto ho deciso di utilizzare Next.js e sfruttare alcune delle sue peculirità. Trovate il progetto su Vercel al link qua sotto.
+Ho usato: 
+- Api Routes
+- Zustand come state manager
+- Axios per le richieste http
+- Jest per i test
 
 ## Demo
 
 https://recipeboook.vercel.app/
 
-
-
 ## Installation
 
-Installalo con NPM O PNPM
+Installalo semplicemente con NPM
 
 ```bash
   cd progetto
-  pnpm install
   npm install
 ```
-    
-    
+       
 ## Deployment
 
 To deploy this project run
@@ -48,36 +29,18 @@ To deploy this project run
   npm run dev
 ```
 
-
-## Running Server
-
-To run server, run the following command
-
-```bash
-  cd Server
-  npm run start
-```
-
-
-### Features
-
 ### Tech Stack
 
-**Client:** 
-
-- React
+- Next.js
 - Typescript
 - Tailwindcss
 
 
-## Optimizations
-
-- Axios for better error handling
-- SPA React Router
-- Tanstack React Query useInfiniteQuery hook for pagination
-- Global states and persistent states by zustand
-
-
 ## Screenshots
 
+![welcome](https://github.com/samuele2298/interviews-front-end-assignment/assets/40797549/03a92c27-31cb-42de-88d4-1539b71f75a4)
+![view](https://github.com/samuele2298/interviews-front-end-assignment/assets/40797549/27fcd069-3302-4568-b321-993ba46aa766)
+![detail1](https://github.com/samuele2298/interviews-front-end-assignment/assets/40797549/02eb31a1-b51c-4b95-be30-98add33b0aad)
+![details2](https://github.com/samuele2298/interviews-front-end-assignment/assets/40797549/afa005fb-2135-4526-8716-1aec13f68e56)
+![search](https://github.com/samuele2298/interviews-front-end-assignment/assets/40797549/8b69a4fe-a38e-4593-91eb-71eac538893e)
 
