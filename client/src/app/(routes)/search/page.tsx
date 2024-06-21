@@ -1,12 +1,11 @@
 'use client'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 import { useSearchStore } from '@/store/searchStore'; // Adjust import path based on your project structure
 import { RecipeFilterType } from '@/types/api';
 import Navbar from '@/components/Navbar';
 import RecipeSearchCard from '@/components/RecipeCard';
 import { useRecipeStore } from '@/store/recipeStore';
 import { FaSyncAlt } from 'react-icons/fa';
-//import '@/styles/style.css';
 
 const RecipesSearchPage = () => {
     const { searchResults, getResults, filter, setFilter } = useSearchStore();
@@ -25,24 +24,39 @@ const RecipesSearchPage = () => {
     }, [getCuisines, getDiets, getDifficulties, filters, getResults]);
 
 
-    const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
 
-        // Update setFilter directly with the new filter value
-        setFilters((prevFilters: RecipeFilterType) => ({
+    const handleQChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target;
+        setFilters(prevFilters => ({
             ...prevFilters,
-            [name]: value,
+            q: prevFilters.q === value ? '' : value,
         }));
-
-        //setFilter(filters)
     };
 
-    const handleSearch = () => {
-        getResults(filters);
+
+    const handleCuisineChange = (cuisineId: string) => {
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            cuisineId: prevFilters.cuisineId === cuisineId ? '' : cuisineId,
+        }));
     };
 
+    const handleDietChange = (dietId: string) => {
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            dietId: prevFilters.dietId === dietId ? '' : dietId,
+        }));
+    };
+
+    const handleDifficultyChange = (difficultyId: string) => {
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            difficultyId: prevFilters.difficultyId === difficultyId ? '' : difficultyId,
+        }));
+    };
+
+    // Handler for resetting all filters
     const handleReset = () => {
-
         setFilters({
             _page: 1,
             _limit: 10,
@@ -62,6 +76,7 @@ const RecipesSearchPage = () => {
             _expand: [],
         });
     };
+
 
     return (
         <div>
@@ -89,30 +104,31 @@ const RecipesSearchPage = () => {
                                 id="search"
                                 name="q"
                                 value={filters.q}
-                                onChange={handleFilterChange}
+                                onChange={handleQChange}
                                 className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none"
                             />
                         </div>
 
+                        {/* Cuisine Preference */}
                         <div>
                             <label className="block font-bold mb-3 ml-2">Cuisine Preference</label>
                             <div className="flex flex-wrap ">
                                 {cuisines.map(cuisine => (
-                                    <div key={cuisine.id} className="flex items-center space-x-2 mb-1 ">
+                                    <div key={cuisine.id} className="flex items-center space-x-2 mb-1">
                                         <input
                                             type="checkbox"
-                                            id={cuisine.id}
-                                            name="cuisineId"
+                                            id={`cuisineId-${cuisine.id}`}
+                                            name={`cuisineId-${cuisine.id}`}
                                             value={cuisine.id}
                                             checked={filters.cuisineId === cuisine.id}
-                                            onChange={handleFilterChange}
+                                            onChange={() => handleCuisineChange(cuisine.id)} // Correct event handler
                                             className="hidden"
                                         />
                                         <label
-                                            htmlFor={cuisine.id}
+                                            htmlFor={`cuisineId-${cuisine.id}`}
                                             className={`cursor-pointer px-4 py-1 rounded-full border border-gray-300 
-                        ${filters.cuisineId === cuisine.id ? 'bg-orange-500 text-white' : 'bg-white text-gray-700'}
-                        hover:bg-orange-500 hover:text-white focus:bg-orange-500 focus:text-white`}
+                                ${filters.cuisineId === cuisine.id ? 'bg-orange-500 text-white' : 'bg-white text-gray-700'}
+                                hover:bg-orange-500 hover:text-white focus:bg-orange-500 focus:text-white`}
                                         >
                                             {cuisine.name}
                                         </label>
@@ -126,21 +142,21 @@ const RecipesSearchPage = () => {
                             <label className="block font-bold mb-3 ml-2">Diet Preference</label>
                             <div className="flex flex-wrap">
                                 {diets.map(diet => (
-                                    <div key={diet.id} className="flex items-center space-x-2 mb-1 ">
+                                    <div key={diet.id} className="flex items-center space-x-2 mb-1">
                                         <input
                                             type="checkbox"
-                                            id={diet.id}
-                                            name="dietId"
+                                            id={`dietId-${diet.id}`}
+                                            name={`dietId-${diet.id}`}
                                             value={diet.id}
                                             checked={filters.dietId === diet.id}
-                                            onChange={handleFilterChange}
+                                            onChange={() => handleDietChange(diet.id)}
                                             className="hidden"
                                         />
                                         <label
-                                            htmlFor={diet.id}
+                                            htmlFor={`dietId-${diet.id}`}
                                             className={`cursor-pointer px-4 py-1 rounded-full border border-gray-300 
-                            ${filters.dietId === diet.id ? 'bg-orange-500 text-white' : 'bg-white text-gray-700'}
-                            hover:bg-orange-500 hover:text-white focus:bg-orange-500 focus:text-white`}
+                                    ${filters.dietId === diet.id ? 'bg-orange-500 text-white' : 'bg-white text-gray-700'}
+                                    hover:bg-orange-500 hover:text-white focus:bg-orange-500 focus:text-white`}
                                         >
                                             {diet.name}
                                         </label>
@@ -154,21 +170,22 @@ const RecipesSearchPage = () => {
                             <label className="block font-bold mb-3 ml-2">Difficulty Level</label>
                             <div className="flex flex-wrap">
                                 {difficulties.map(difficulty => (
-                                    <div key={difficulty.id} className="flex items-center space-x-2 mb-1 ">
+                                    <div key={difficulty.id} className="flex items-center space-x-2 mb-1">
                                         <input
                                             type="checkbox"
-                                            id={difficulty.id}
-                                            name="difficultyId"
+                                            id={`difficultyId-${difficulty.id}`}
+                                            name={`difficultyId-${difficulty.id}`}
+
                                             value={difficulty.id}
                                             checked={filters.difficultyId === difficulty.id}
-                                            onChange={handleFilterChange}
+                                            onChange={() => handleDifficultyChange(difficulty.id)}
                                             className="hidden"
                                         />
                                         <label
-                                            htmlFor={difficulty.id}
+                                            htmlFor={`difficultyId-${difficulty.id}`}
                                             className={`cursor-pointer px-4 py-1 rounded-full border border-gray-300 
-                            ${filters.difficultyId === difficulty.id ? 'bg-orange-500 text-white' : 'bg-white text-gray-700'}
-                            hover:bg-orange-500 hover:text-white focus:bg-orange-500 focus:text-white`}
+                                    ${filters.difficultyId === difficulty.id ? 'bg-orange-500 text-white' : 'bg-white text-gray-700'}
+                                    hover:bg-orange-500 hover:text-white focus:bg-orange-500 focus:text-white`}
                                         >
                                             {difficulty.name}
                                         </label>
@@ -177,15 +194,6 @@ const RecipesSearchPage = () => {
                             </div>
                         </div>
 
-                        {/*                  <button
-                            type="button"
-                            onClick={handleSearch}
-                            className="ml-2 px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
-                        >
-                            Search
-                        </button>
-
-                    */}
 
                     </div>
 

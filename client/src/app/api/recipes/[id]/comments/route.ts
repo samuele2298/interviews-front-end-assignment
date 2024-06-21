@@ -1,13 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { CommentType } from '../../../../../types/api';
+import { CommentType } from '@/types/api';
+import { CommentFormType } from '@/types/form';
+
 import fs from 'fs';
 import path from 'path';
 import db from '../../../../../../public/db.json'; // Ensure the correct path to db.json
+
+// Function to read from db.json
+const readFromDB = () => {
+    const rawData = fs.readFileSync('./public/db.json', 'utf-8');
+    return JSON.parse(rawData);
+};
 
 // Function to write to db.json
 const writeToDB = (data: CommentType[]) => {
     fs.writeFileSync(path.resolve('./public/db.json'), JSON.stringify(data, null, 2));
 };
+
+// Function to generate a new unique ID for comments as string
+const generateNewCommentId = (comments: CommentType[]): string => {
+    // Sort comments by ID in descending order to get the latest ID
+    const sortedComments = comments.slice().sort((a, b) => Number(b.id) - Number(a.id));
+    const lastComment = sortedComments[0]; // Get the comment with the highest ID
+
+    const lastId = lastComment ? lastComment.id : '0'; // Default to '0' if no comments
+    const newId = String(Number(lastId) + 1); // Convert the sum to string
+    return newId;
+};
+
 
 // GET Handler to fetch comments for a specific recipe
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
@@ -40,15 +60,28 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
             return NextResponse.json({ error: 'Recipe ID is required' }, { status: 400 });
         }
 
-        const newComment: CommentType = await req.json();
+
+        // Read existing data from db.json
+        const db = readFromDB();
+
+        // Find the recipe by id to associate the comment with it (assuming recipes have unique ids)
+        const recipe = db.recipes.find((recipe: { id: string }) => recipe.id === id);
+
+        if (!recipe) {
+            return NextResponse.json({ error: 'Recipe not found' }, { status: 404 });
+        }
+
+        const newComment = await req.json(); // Assuming the request body contains the new comment data
+        newComment.id = generateNewCommentId(db.comments); // Generate new comment id
         newComment.recipeId = id; // Associate the comment with the recipe ID
-        const comments: CommentType[] = db.comments;
 
-        // Add the new comment
-        comments.push(newComment);
+        // Add the new comment to the comments array
+        db.comments.push(newComment);
 
-        // Write to the db.json file
-        writeToDB(comments);
+        // Write updated data back to db.json
+        writeToDB(db);
+
+
 
         return NextResponse.json(newComment, { status: 201 });
     } catch (error) {

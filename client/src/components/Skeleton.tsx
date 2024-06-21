@@ -15,8 +15,16 @@ const Skeleton = () => {
                             {/* Comments Section Skeleton */}
                             <div className="h-12 bg-gray-300 rounded-full mb-4"></div>
                         </div>
+
+                        <div className="h-12 bg-gray-300 rounded-full mb-4"></div>
+
                         <div className="h-4 bg-gray-300 rounded-full mb-4"></div>
+
+                        <div className="h-12 bg-gray-300 rounded-full mb-4"></div>
+
                         <div className="h-3 bg-gray-300 rounded-full mb-3"></div>
+
+
                         <div className="h-3 bg-gray-300 rounded-full mb-3"></div>
                         <div className="h-3 bg-gray-300 rounded-full mb-3"></div>
                         <div className="h-3 bg-gray-300 rounded-full mb-3"></div>
@@ -24,11 +32,11 @@ const Skeleton = () => {
                     </div>
 
                     {/* Left column for recipe details */}
-                    <div className=" h-full w-full mb-4 flex justify-center items-center bg-gray-300 animate-pulse">
+                    <div className=" h-1/3 w-1/3 mb-4 flex justify-center items-center bg-gray-300 animate-pulse">
                         {/* Placeholder icon */}
                         <svg
-                            className="w-20 h-20 text-gray-200 dark:text-gray-600"  // Adjust the size relative to the parent container
-                            aria-hidden="true"
+                            className="w-15 h-15 text-gray-200 dark:text-gray-600"  // Adjust the size relative to the parent container
+                            aria-hidden="false"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="currentColor"
                             viewBox="0 0 20 18"

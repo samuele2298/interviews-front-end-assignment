@@ -124,18 +124,9 @@ export const useRecipeStore = create<recipeStoreType>((set, get) => ({
     //POST
     async addRecipe(recipeForm: RecipeFormType) {
         try {
-            const formData = new FormData();
-            formData.append('name', recipeForm.name);
-            formData.append('ingredients', JSON.stringify(recipeForm.ingredients));
-            formData.append('instructions', recipeForm.instructions);
-            formData.append('cuisineId', recipeForm.cuisineId);
-            formData.append('dietId', recipeForm.dietId);
-            formData.append('difficultyId', recipeForm.difficultyId);
-            formData.append('image', recipeForm.image);
-
 
             axios
-                .post(`${URL}/recipes`, formData, {
+                .post(`${URL}/recipes`, recipeForm, {
                     headers: {
                         'Content-Type': 'multipart/form-data', // Use multipart/form-data for FormData
                     },

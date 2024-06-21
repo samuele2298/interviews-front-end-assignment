@@ -5,9 +5,26 @@ import db from '../../../../public/db.json'; // Assuming db.json is in the root 
 import fs from 'fs';
 import path from 'path';
 
+// Function to read from db.json
+const readFromDB = () => {
+    const rawData = fs.readFileSync('./public/db.json', 'utf-8');
+    return JSON.parse(rawData);
+};
+
 // Function to write to db.json
 const writeToDB = (data: RecipeType[]) => {
     fs.writeFileSync(path.resolve('./public/db.json'), JSON.stringify(data, null, 2));
+};
+
+// Function to generate a new unique ID for comments as string
+const generateNewRecipeId = (recipes: RecipeType[]): string => {
+    // Sort comments by ID in descending order to get the latest ID
+    const sortedRecipes = recipes.slice().sort((a, b) => Number(b.id) - Number(a.id));
+    const lastRecipe = sortedRecipes[0]; // Get the comment with the highest ID
+
+    const lastId = lastRecipe ? lastRecipe.id : '0'; // Default to '0' if no comments
+    const newId = String(Number(lastId) + 1); // Convert the sum to string
+    return newId;
 };
 
 export async function GET(req: NextRequest) {
@@ -113,17 +130,18 @@ export async function POST(req: NextRequest) {
     try {
         //console.log('Received JSON:', req.json());
 
+        // Read existing data from db.json
+        const db = readFromDB();
 
-        const newRecipe: RecipeType = await req.json();
-        console.log('Received JSON:', newRecipe);
+        const newRecipe = await req.json(); // Assuming the request body contains the new comment data
+        newRecipe.id = generateNewRecipeId(db.recipes); // Generate new comment id
 
-        const recipes: RecipeType[] = db.recipes;
+        // Add the new comment to the comments array
+        db.recipes.push(newRecipe);
 
-        // Add the new recipe
-        recipes.push(newRecipe);
+        // Write updated data back to db.json
+        writeToDB(db);
 
-        // Write to the db.json file
-        writeToDB(recipes);
 
         return NextResponse.json(newRecipe, { status: 201 });
     } catch (error) {

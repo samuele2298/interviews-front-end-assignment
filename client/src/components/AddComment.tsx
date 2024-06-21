@@ -28,19 +28,25 @@ const AddComments: React.FC<AddCommentsProps> = ({ recipeId }) => {
         }));
     };
 
+
+    //RATING
     const [rating, setRating] = useState<number>(newComment.rating);
-    const [showNotification, setShowNotification] = useState(false);
 
     const handleRatingChange = (newRating: number) => {
         setRating(newRating);
-        handleChange({ target: { name: 'rating', value: String(newRating) } } as React.ChangeEvent<HTMLInputElement>);
+        setNewComment(prevComment => ({
+            ...prevComment,
+            rating: newRating,
+        }));
     };
 
+    //SUBMIT
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
         console.log(newComment); // Process newComment here
         addComment(recipeId, newComment);
-
+        // Refresh the page after adding the comment
+        window.location.reload();
     };
 
     return (

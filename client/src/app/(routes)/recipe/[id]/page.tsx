@@ -44,13 +44,6 @@ export default function DetailsPage({
         return (
 
             <Skeleton />
-
-            /*     <div>
-                    <Navbar />
-                    <h1 className=" top-0 left-0 flex flex-col items-start justify-start p-4 text-4xl text-gray-900">
-                        Loading...
-                    </h1>
-                </div> */
         );
     }
 

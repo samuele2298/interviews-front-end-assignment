@@ -1,13 +1,10 @@
 'use client'
 
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRecipeStore } from '@/store/recipeStore'; // Adjust import path based on your project structure
 import { RecipeFormType } from '@/types/form';
 import Navbar from '@/components/Navbar';
-import FormRow from '@/components/FormRow';
-import FormLabel from '@/components/FormLabel';
-import { useDropzone } from 'react-dropzone';
 
 const AddRecipe = () => {
     const router = useRouter();
@@ -29,7 +26,7 @@ const AddRecipe = () => {
         cuisineId: '',
         dietId: '',
         difficultyId: '',
-        image: 'fgdgdgfgd',
+        image: 'prova.jpg',
     });
     const [errors, setErrors] = useState({
         name: '',
@@ -84,22 +81,6 @@ const AddRecipe = () => {
     };
 
 
-    //IMAGE
-    const onDrop = useCallback((acceptedFiles: Array<File>) => {
-        const file = new FileReader;
-
-        file.onload = function () {
-            setPreview(file.result);
-        }
-
-        file.readAsDataURL(acceptedFiles[0])
-    }, [])
-    const { acceptedFiles, getRootProps, getInputProps, isDragActive } = useDropzone({
-        onDrop
-    });
-    const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
-
-
     //SUBMIT
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -114,7 +95,6 @@ const AddRecipe = () => {
             if (!recipeForm.cuisineId) validationErrors.cuisineId = 'Cuisine is required';
             if (!recipeForm.dietId) validationErrors.dietId = 'Diet is required';
             if (!recipeForm.difficultyId) validationErrors.difficultyId = 'Difficulty level is required';
-            if (!acceptedFiles || acceptedFiles.length === 0) validationErrors.image = 'Image is required';
 
 
             // If there are validation errors, handle them appropriately
@@ -128,6 +108,10 @@ const AddRecipe = () => {
 
             // Redirect to recipes page or any other route after successful submission
             router.push('/recipe');
+
+
+
+
         } catch (error) {
             console.error('Error adding recipe:', error);
         }
@@ -155,41 +139,6 @@ const AddRecipe = () => {
                                 {errors.name && <p className="text-red-500">{errors.name}</p>}
                             </div>
 
-                            <div className="mb-4">
-                                <label htmlFor="ingredients" className="block font-semibold mb-4">Ingredients</label>
-                                {recipeForm.ingredients.map((ingredient, index) => (
-                                    <div key={index} className="flex items-center space-x-2 mb-4">
-                                        <label>
-                                            Name
-                                            <input
-                                                type="text"
-                                                value={ingredient}
-                                                onChange={e => handleIngredientChange(e, index)}
-                                                className={`w-full border border-gray-300 rounded px-3 py-2 focus:outline-none ${errors.ingredients && 'border-red-500'}`}
-                                            />
-                                        </label>
-
-                                        <button
-                                            type="button"
-                                            onClick={() => handleRemoveIngredient(index)}
-                                            className="bg-orange-500  text-white px-4 py-1 font-bold rounded-full shadow-md hover:scale-105 transform transition duration-300 mt-6 md:mt-0"
-
-                                        >
-                                            -
-                                        </button>
-
-                                    </div>
-                                ))}
-                                <button
-                                    type="button"
-                                    onClick={handleAddIngredient}
-                                    className="bg-orange-500  text-white px-8 py-3 font-semibold rounded-full shadow-md hover:scale-105 transform transition duration-300 mt-6 md:mt-0"
-
-                                >
-                                    Add Ingredient
-                                </button>
-                                {errors.ingredients && <p className="text-red-500">{errors.ingredients}</p>}
-                            </div>
 
                             <div className="mb-4">
                                 <label htmlFor="instructions" className="block font-semibold mb-4">Instructions</label>
@@ -247,7 +196,7 @@ const AddRecipe = () => {
                                 </div>
 
 
-                                <div className="ml-4">
+                                <div className="ml-4 mb-6">
                                     <label htmlFor="difficultyId" className="block font-semibold mb-4">Difficulty</label>
                                     <select
                                         id="difficultyId"
@@ -265,34 +214,43 @@ const AddRecipe = () => {
                                 </div>
 
                             </div>
-                            <div className="ml-4 mt-5">
+                            <div className=" ml-4 mb-4">
+                                <label htmlFor="ingredients" className="block font-semibold mb-4">Ingredients</label>
+                                {recipeForm.ingredients.map((ingredient, index) => (
+                                    <div key={index} className="flex items-center space-x-2 mb-4">
+                                        <label>
+                                            Name
+                                            <input
+                                                type="text"
+                                                value={ingredient}
+                                                onChange={e => handleIngredientChange(e, index)}
+                                                className={`w-full border border-gray-300 rounded px-3 py-2 focus:outline-none ${errors.ingredients && 'border-red-500'}`}
+                                            />
+                                        </label>
 
-                                <FormRow className="mb-5">
-                                    <FormLabel htmlFor="image">Image</FormLabel>
-                                    <div {...getRootProps()}>
-                                        <input {...getInputProps()} />
-                                        {
-                                            isDragActive ?
-                                                <p>Drop the files here ...</p> :
-                                                <p>Drag 'n' drop some files here, or click to select files</p>
-                                        }
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveIngredient(index)}
+                                            className="bg-orange-500  text-white px-4 py-1 font-bold rounded-full shadow-md hover:scale-105 transform transition duration-300 mt-6 md:mt-0"
+
+                                        >
+                                            -
+                                        </button>
+
                                     </div>
-                                </FormRow>
+                                ))}
+                                <button
+                                    type="button"
+                                    onClick={handleAddIngredient}
+                                    className="bg-orange-500  text-white px-4 py-1 font-semibold rounded-full shadow-md hover:scale-105 transform transition duration-300 mt-6 md:mt-0"
 
-                                {preview && (
-                                    <p className="mb-5">
-                                        <img src={preview as string} alt="Upload preview" />
-                                    </p>
-                                )}
-
+                                >
+                                    Add Ingredient
+                                </button>
+                                {errors.ingredients && <p className="text-red-500">{errors.ingredients}</p>}
                             </div>
-                            <button
-                                type="submit"
-                                className="bg-orange-500  text-white px-8 py-3 font-bold rounded-full shadow-md hover:scale-105 transform transition duration-300 mt-6 md:mt-0"
 
-                            >
-                                Add Recipe
-                            </button>
+
                         </div>
 
 
@@ -300,7 +258,13 @@ const AddRecipe = () => {
 
                     </div>
 
+                    <button
+                        type="submit"
+                        className="bg-orange-500  text-white px-8 py-3 font-bold rounded-full shadow-md hover:scale-105 transform transition duration-300 mt-6 md:mt-0"
 
+                    >
+                        Add Recipe
+                    </button>
                 </form>
             </div >
         </div >
