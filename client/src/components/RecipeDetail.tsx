@@ -1,21 +1,15 @@
 'use client'
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { CuisineType, DietType, DifficultyType, RecipeType } from '../types/api'; // Importing the Recipe interface with an alias
-import { useRecipeStore } from '@/src/store/recipeStore';
+import { useTags } from '../hooks/useTags';
 
 interface RecipeProps {
     recipe: RecipeType;
 }
 
 const RecipeDetailComponent: React.FC<RecipeProps> = ({ recipe }) => {
-    const { getDiets, getCuisines, getDifficulties, diets, cuisines, difficulties } = useRecipeStore();
-
-    useEffect(() => {
-        getDiets();
-        getCuisines();
-        getDifficulties();
-    }, [getDiets, getCuisines, getDifficulties]);
+    const { difficulties, cuisines, diets } = useTags();
 
 
     return (

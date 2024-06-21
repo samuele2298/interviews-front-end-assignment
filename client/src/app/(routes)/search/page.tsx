@@ -5,40 +5,32 @@ import { useSearchStore } from '@/src/store/searchStore';
 import { CuisineType, DietType, DifficultyType, RecipeFilterType } from '@/src/types/api';
 import Navbar from '@/src/components/Navbar';
 import RecipeSearchCard from '@/src/components/RecipeCard';
-import { useRecipeStore } from '@/src/store/recipeStore';
 import { FaSyncAlt } from 'react-icons/fa';
+import { useTags } from '@/src/hooks/useTags';
 
 const RECIPE_PER_PAGE_LIMIT = 50;
 const PAGE_PER_SEARCH = 1;
 
 const RecipesSearchPage = () => {
     const { searchResults, getResults } = useSearchStore();
-    const { difficulties, diets, cuisines, getCuisines, getDiets, getDifficulties } = useRecipeStore();
+    const { difficulties, diets, cuisines } = useTags();
 
-    const [filters, setFilters] = useState<RecipeFilterType>(
-        {
-            _page: PAGE_PER_SEARCH,
-            _limit: RECIPE_PER_PAGE_LIMIT,
-            q: 'pizza',
-            cuisineId: '',
-            difficultyId: '',
-            dietId: '',
-            _expand: []
-        }
-    );
+    const [filters, setFilters] = useState<RecipeFilterType>({
+        _page: PAGE_PER_SEARCH,
+        _limit: RECIPE_PER_PAGE_LIMIT,
+        q: '',
+        cuisineId: '',
+        difficultyId: '',
+        dietId: '',
+        _expand: []
+    });
 
     useEffect(() => {
-        // Initial fetches for filters
-        getCuisines();
-        getDiets();
-        getDifficulties();
 
         // Every time the components update it update the search
         getResults(filters);
 
-    }, [getCuisines, getDiets, getDifficulties, filters, getResults]);
-
-
+    }, [filters, getResults]);
 
     //Handler for change in the filter
     const handleQChange = (event: ChangeEvent<HTMLInputElement>) => {

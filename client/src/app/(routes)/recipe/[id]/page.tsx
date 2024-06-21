@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState } from "react";
 
 import RecipeDetail from "@/src/components/RecipeDetail";
 import AddComments from "@/src/components/AddComment";
@@ -8,31 +7,14 @@ import Navbar from "@/src/components/Navbar";
 import Skeleton from "@/src/components/Skeleton";
 import Comments from "@/src/components/Comments";
 
-import { useRecipeStore } from '@/src/store/recipeStore';
-
+import { useRecipeDetails } from '@/src/hooks/useRecipeDetails';
 
 export default function DetailsPage({ params: { id }, }: { params: { id: string; } }) {
 
-    const { getRecipe, recipe } = useRecipeStore();
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        // Fetch recipe details when id changes or component mounts
-        setIsLoading(true); // Set loading to true while fetching
-        getRecipe(id);
-        if (recipe != null)
-            setIsLoading(false); // Set loading to false on error
-        else
-            console.error('Error fetching recipe:');
-        setIsLoading(false); // Set loading to false on error
-
-    }, [id, getRecipe]);
+    const { recipe, isLoading } = useRecipeDetails(id);
 
     if (isLoading || !recipe) {
-        //For now if i don't find the recipe stay in loading
-        return (
-            <Skeleton />
-        );
+        return <Skeleton />;
     }
 
     return (

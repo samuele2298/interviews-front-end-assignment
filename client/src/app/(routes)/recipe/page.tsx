@@ -2,35 +2,23 @@
 
 import Recipe from '@/src/components/Recipe';
 import Navbar from '@/src/components/Navbar';
-import { useRecipeStore } from '@/src/store/recipeStore';
 import React, { useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { useRecipes } from '@/src/hooks/useRecipes';
 
 const RecipViewPage = () => {
-    const { recipes, getRecipes, isLoading, hasMore } = useRecipeStore();
+    const { recipes, isLoading, loadMore } = useRecipes();
     const [currentRecipeIndex, setCurrentRecipeIndex] = useState(0);
-
-    useEffect(() => {
-        //Fecth a standerd list of recipes
-        getRecipes();
-    }, []);
 
     // Calculate the total number of recipes
     const totalRecipes = recipes.length;
 
-    // Effect to load more recipes when the last recipe in the current list is reached
+    // Effect to handle pagination when the current recipe index changes
     useEffect(() => {
         if (currentRecipeIndex === totalRecipes - 1) {
             loadMore();
         }
-    }, [currentRecipeIndex, totalRecipes]);
-
-    // Function to load more recipes if there are more available and it's not currently loading
-    const loadMore = () => {
-        if (hasMore && !isLoading) {
-            getRecipes();
-        }
-    };
+    }, [currentRecipeIndex, totalRecipes, loadMore]);
 
 
     const goToPreviousRecipe = () => {

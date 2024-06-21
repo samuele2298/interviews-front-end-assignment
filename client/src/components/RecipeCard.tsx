@@ -1,23 +1,17 @@
 'use client'
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { CuisineType, DietType, DifficultyType, RecipeType } from '../types/api';
 import { useRouter } from 'next/navigation';
-import { useRecipeStore } from '@/src/store/recipeStore';
+import { useTags } from '../hooks/useTags';
 
 interface RecipeProps {
     recipe: RecipeType;
 }
 
 const RecipeSearchCard: React.FC<RecipeProps> = ({ recipe }) => {
-    const { getDiets, getCuisines, getDifficulties, diets, cuisines, difficulties } = useRecipeStore();
     const router = useRouter();
-
-    useEffect(() => {
-        getDiets();
-        getCuisines();
-        getDifficulties();
-    }, [getDiets, getCuisines, getDifficulties]);
+    const { difficulties, cuisines, diets } = useTags();
 
     const handleDetailClick = () => {
         router.push(`/recipe/${recipe.id}`);

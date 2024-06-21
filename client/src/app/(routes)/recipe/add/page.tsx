@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useFormActions } from '@/src/hooks/useFormActions';
+import { useTags } from '@/src/hooks/useTags';
 
-import { useRecipeStore } from '@/src/store/recipeStore';
 import { RecipeFormType } from '@/src/types/form';
 
 import Navbar from '@/src/components/Navbar';
@@ -11,17 +12,8 @@ import { CuisineType, DietType, DifficultyType } from '@/src/types/api';
 
 const AddRecipe = () => {
     const router = useRouter();
-    const { addRecipe, difficulties, cuisines, diets,
-        getCuisines, getDiets, getDifficulties } = useRecipeStore();
-
-
-    useEffect(() => {
-        //Fetch cuisines, diets and difficulties
-        getDiets();
-        getCuisines();
-        getDifficulties();
-    }, [getDiets, getCuisines, getDifficulties]);
-
+    const { submitRecipe } = useFormActions();
+    const { difficulties, cuisines, diets } = useTags();
 
     const [recipeForm, setRecipeForm] = useState<RecipeFormType>({
         name: '',
@@ -129,7 +121,7 @@ const AddRecipe = () => {
             }
 
             // If validation passes, proceed with adding recipe
-            addRecipe(recipeForm);
+            submitRecipe(recipeForm);
 
             // Redirect to recipes page or any other route after successful submission
             router.push('/search');
