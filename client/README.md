@@ -3,7 +3,7 @@
 
 Per questo progetto ho deciso di utilizzare Next.js e sfruttare alcune delle sue peculirità. Trovate il progetto su Vercel al link qua sotto.
 Ho usato: 
-- Api Routes
+- Api Routes, ho crato delle api routes per maggiore semplicità (ovviamente si puo usare il server in qualsiasi momento)
 - Zustand come state manager
 - Axios per le richieste http
 - Jest per i test
