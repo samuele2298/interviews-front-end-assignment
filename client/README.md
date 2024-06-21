@@ -2,22 +2,19 @@
 # Recipe4U
 
 Per questo progetto ho deciso di utilizzare Next.js e sfruttare alcune delle sue peculirità. Trovate il progetto su Vercel al link qua sotto.
+
 Ho usato: 
 - Api Routes, ho crato delle api routes per maggiore semplicità (ovviamente si puo usare il server in qualsiasi momento)
 - Zustand come state manager
 - Axios per le richieste http
-- Jest per i test
 
-## Demo
-
-https://vercel
 
 ## Installation
 
 Installalo semplicemente con NPM
 
 ```bash
-  cd progetto
+  cd cartella_del_progetto
   npm install
 ```
        
@@ -34,7 +31,6 @@ To deploy this project run
 - Next.js
 - Typescript
 - Tailwindcss
-
 
 ## Screenshots
 
