@@ -1,16 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { CommentType } from '@/types/api';
-import { CommentFormType } from '@/types/form';
+import { CommentType } from '@/src/types/api';
+import { CommentFormType } from '@/src/types/form';
 
 import fs from 'fs';
 import path from 'path';
-import db from '../../../../../../public/db.json'; // Ensure the correct path to db.json
 
-// Function to read from db.json
-const readFromDB = () => {
-    const rawData = fs.readFileSync('./public/db.json', 'utf-8');
-    return JSON.parse(rawData);
-};
+const db = require('@/public/db.json');
 
 // Function to write to db.json
 const writeToDB = (data: CommentType[]) => {
@@ -32,16 +27,15 @@ const generateNewCommentId = (comments: CommentType[]): string => {
 // GET Handler to fetch comments for a specific recipe
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
     try {
-        const { id } = params; // Destructure 'id' from params
+        const { id } = params;
 
-        //const { searchParams } = new URL(req.url);
-        //const id = searchParams.get('id');
         if (!id) {
             return NextResponse.json({ error: 'Recipe ID is required' }, { status: 400 });
         }
 
-        const comments: CommentType[] = db.comments.filter(comment => comment.recipeId === id);
+        const comments: CommentType[] = db.comments.filter((comment: CommentType) => comment.recipeId === id);
         return NextResponse.json(comments, { status: 200 });
+
     } catch (error) {
         console.error('Error fetching comments:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
@@ -49,24 +43,16 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 // POST Handler to add a new comment to a specific recipe
-
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
     try {
 
         const { id } = params; // Destructure 'id' from params
-
-
         if (!id) {
             return NextResponse.json({ error: 'Recipe ID is required' }, { status: 400 });
         }
 
-
-        // Read existing data from db.json
-        const db = readFromDB();
-
         // Find the recipe by id to associate the comment with it (assuming recipes have unique ids)
         const recipe = db.recipes.find((recipe: { id: string }) => recipe.id === id);
-
         if (!recipe) {
             return NextResponse.json({ error: 'Recipe not found' }, { status: 404 });
         }
@@ -80,8 +66,6 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
         // Write updated data back to db.json
         writeToDB(db);
-
-
 
         return NextResponse.json(newComment, { status: 201 });
     } catch (error) {

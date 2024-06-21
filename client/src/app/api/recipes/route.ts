@@ -1,15 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { RecipeType } from '../../../types/api';
-import db from '../../../../public/db.json'; // Assuming db.json is in the root or accessible
+import { RecipeType, DifficultyType, CuisineType, DietType } from '@/src/types/api';
 import fs from 'fs';
 import path from 'path';
 
-// Function to read from db.json
-const readFromDB = () => {
-    const rawData = fs.readFileSync('./public/db.json', 'utf-8');
-    return JSON.parse(rawData);
-};
+const db = require('@/public/db.json');
 
 // Function to write to db.json
 const writeToDB = (data: RecipeType[]) => {
@@ -27,6 +22,7 @@ const generateNewRecipeId = (recipes: RecipeType[]): string => {
     return newId;
 };
 
+// GET Handler to fetch adn filter recipes
 export async function GET(req: NextRequest) {
     try {
 
@@ -42,20 +38,12 @@ export async function GET(req: NextRequest) {
         const difficultyId = searchParams.get('difficultyId');
         const _expand = searchParams.getAll('_expand');
 
-        console.log('_page:', _page);
-        console.log('_limit:', _limit);
-        console.log('q:', q);
-        console.log('cuisineId:', cuisineId);
-        console.log('dietId:', dietId);
-        console.log('difficultyId:', difficultyId);
-        console.log('_expand:', _expand);
-
         // Convert _page and _limit to numbers, with defaults if not provided
         const page = _page ? parseInt(_page as string, 10) : 1;
         const limit = _limit ? parseInt(_limit as string, 10) : 10;
 
         // Filter recipes based on query parameters
-        var filteredRecipes: RecipeType[] = [...db.recipes]; // Copy recipes array from db.json
+        var filteredRecipes: RecipeType[] = [...db.recipes];
 
         if (q) {
             // Perform full text search filtering (assuming 'q' filters by recipe name or similar)
@@ -92,21 +80,21 @@ export async function GET(req: NextRequest) {
                 // Add difficulty object to each recipe (assuming difficulty is a nested object in db.json)
                 filteredRecipes.forEach(recipe => {
                     // Assuming db.difficulties is an array of difficulty objects
-                    recipe.difficulty = db.difficulties.find(d => d.id === recipe.difficultyId);
+                    recipe.difficulty = db.difficulties.find((d: DifficultyType) => d.id === recipe.difficultyId);
                 });
             }
             if (_expand.includes('cuisine')) {
                 // Add cuisine object to each recipe (assuming cuisine is a nested object in db.json)
                 filteredRecipes.forEach(recipe => {
                     // Assuming db.cuisines is an array of cuisine objects
-                    recipe.cuisine = db.cuisines.find(c => c.id === recipe.cuisineId);
+                    recipe.cuisine = db.cuisines.find((c: CuisineType) => c.id === recipe.cuisineId);
                 });
             }
             if (_expand.includes('diet')) {
                 // Add diet object to each recipe (assuming diet is a nested object in db.json)
                 filteredRecipes.forEach(recipe => {
                     // Assuming db.diets is an array of diet objects
-                    recipe.diet = db.diets.find(d => d.id === recipe.dietId);
+                    recipe.diet = db.diets.find((d: DietType) => d.id === recipe.dietId);
                 });
             }
         }
@@ -123,25 +111,18 @@ export async function GET(req: NextRequest) {
     }
 }
 
-
-
-// POST Handler
+// POST Handler to add a new recipe 
 export async function POST(req: NextRequest) {
     try {
-        //console.log('Received JSON:', req.json());
 
-        // Read existing data from db.json
-        const db = readFromDB();
-
-        const newRecipe = await req.json(); // Assuming the request body contains the new comment data
-        newRecipe.id = generateNewRecipeId(db.recipes); // Generate new comment id
+        const newRecipe = await req.json();
+        newRecipe.id = generateNewRecipeId(db.recipes);
 
         // Add the new comment to the comments array
         db.recipes.push(newRecipe);
 
         // Write updated data back to db.json
         writeToDB(db);
-
 
         return NextResponse.json(newRecipe, { status: 201 });
     } catch (error) {

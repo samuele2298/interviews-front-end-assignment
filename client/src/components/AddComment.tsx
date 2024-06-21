@@ -1,15 +1,15 @@
 'use client'
 
 import React, { useState } from 'react';
-import { useRecipeStore } from '@/store/recipeStore';
-import { CommentFormType } from '@/types/form';
+import { useRecipeStore } from '@/src/store/recipeStore';
+import { CommentFormType } from '@/src/types/form';
 import { FaStar } from 'react-icons/fa';
 
 interface AddCommentsProps {
     recipeId: string;
 }
 
-const AddComments: React.FC<AddCommentsProps> = ({ recipeId }) => {
+const AddComment: React.FC<AddCommentsProps> = ({ recipeId }) => {
     const { addComment } = useRecipeStore(); // Destructure getRecipe from useRecipeStore
 
     const [newComment, setNewComment] = useState<CommentFormType>({
@@ -43,8 +43,9 @@ const AddComments: React.FC<AddCommentsProps> = ({ recipeId }) => {
     //SUBMIT
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        console.log(newComment); // Process newComment here
+
         addComment(recipeId, newComment);
+
         // Refresh the page after adding the comment
         window.location.reload();
     };
@@ -94,5 +95,5 @@ const AddComments: React.FC<AddCommentsProps> = ({ recipeId }) => {
     );
 };
 
-export default AddComments;
+export default AddComment;
 

@@ -1,8 +1,10 @@
 
 import { NextResponse } from 'next/server';
-import { DietType } from '../../../types/api';
-import db from '../../../../public/db.json'; // Assuming db.json is in the root or accessible
+import { DietType } from '@/src/types/api';
+const db = require('@/public/db.json');
 
+
+// GET Handler to fetch diets  
 export async function GET() {
     try {
         const diets: DietType[] = db.diets;

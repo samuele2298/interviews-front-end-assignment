@@ -1,8 +1,8 @@
 'use client'
 
-import Recipe from '@/components/Recipe';
-import Navbar from '@/components/Navbar';
-import { useRecipeStore } from '@/store/recipeStore';
+import Recipe from '@/src/components/Recipe';
+import Navbar from '@/src/components/Navbar';
+import { useRecipeStore } from '@/src/store/recipeStore';
 import React, { useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
@@ -11,16 +11,27 @@ const RecipViewPage = () => {
     const [currentRecipeIndex, setCurrentRecipeIndex] = useState(0);
 
     useEffect(() => {
+        //Fecth a standerd list of recipes
         getRecipes();
     }, []);
 
+    // Calculate the total number of recipes
+    const totalRecipes = recipes.length;
+
+    // Effect to load more recipes when the last recipe in the current list is reached
+    useEffect(() => {
+        if (currentRecipeIndex === totalRecipes - 1) {
+            loadMore();
+        }
+    }, [currentRecipeIndex, totalRecipes]);
+
+    // Function to load more recipes if there are more available and it's not currently loading
     const loadMore = () => {
         if (hasMore && !isLoading) {
             getRecipes();
         }
     };
 
-    const totalRecipes = recipes.length;
 
     const goToPreviousRecipe = () => {
         setCurrentRecipeIndex(currentRecipeIndex === 0 ? totalRecipes - 1 : currentRecipeIndex - 1);
@@ -30,12 +41,6 @@ const RecipViewPage = () => {
         setCurrentRecipeIndex((currentRecipeIndex + 1) % totalRecipes);
     };
 
-    useEffect(() => {
-        // Load more recipes when reaching the last recipe
-        if (currentRecipeIndex === totalRecipes - 1) {
-            loadMore();
-        }
-    }, [currentRecipeIndex, totalRecipes]);
 
     return (
         <div className="w-full flex flex-col h-screen">

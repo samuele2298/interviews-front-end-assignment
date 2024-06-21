@@ -1,4 +1,5 @@
 'use client'
+
 import { CommentType } from '../types/api';
 import { FaStar } from 'react-icons/fa';
 import { format } from 'date-fns';

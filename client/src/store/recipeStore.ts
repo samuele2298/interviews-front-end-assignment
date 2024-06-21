@@ -1,7 +1,7 @@
 import create from 'zustand';
 import axios from 'axios';
 import { RecipeFormType, CommentFormType, } from '../types/form';
-import { recipeStoreType } from '@/types/state';
+import { recipeStoreType } from '@/src/types/state';
 import {
     CuisineType,
     DifficultyType,
@@ -10,16 +10,14 @@ import {
     CommentType,
 } from '../types/api';
 
+
+//SELECT THE SERVER 
 //const URL = 'http://localhost:3000';
 const URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000/api';
-
-const DOWNLOAD_FOLDER = '../../src/upload_images';
-const LIMIT = 10;
-
-
+const RECIPE_PER_PAGE_LIMIT = 10;
 
 export const useRecipeStore = create<recipeStoreType>((set, get) => ({
-    page: 1,
+    page: 1, //Start with the first page
     recipe: null,
     recipes: [] as RecipeType[],
     cuisines: [] as CuisineType[],
@@ -43,11 +41,10 @@ export const useRecipeStore = create<recipeStoreType>((set, get) => ({
     async getRecipes() {
         const { page, setRecipes } = get();
         axios
-            .get(`${URL}/recipes?_page=${page}&_per_page=${LIMIT}`)
+            .get(`${URL}/recipes?_page=${page}&_per_page=${RECIPE_PER_PAGE_LIMIT}`)
             .then(({ data }) => setRecipes(data))
             .catch((error) => console.error('Error fetching recipes:', error))
             .finally(() => set({ isLoading: false }));
-
     },
 
     async getRecipe(id: string) {
@@ -71,7 +68,7 @@ export const useRecipeStore = create<recipeStoreType>((set, get) => ({
 
     },
 
-    getDifficulties() {
+    async getDifficulties() {
         const { setDifficulties } = get();
         axios
             .get(`${URL}/difficulties`)
@@ -79,7 +76,7 @@ export const useRecipeStore = create<recipeStoreType>((set, get) => ({
             .catch((error) => console.error('Error fetching difficulties:', error))
     },
 
-    getCuisines() {
+    async getCuisines() {
         const { setCuisines } = get();
         axios
             .get(`${URL}/cuisines`)
@@ -87,7 +84,7 @@ export const useRecipeStore = create<recipeStoreType>((set, get) => ({
             .catch((error) => console.error('Error fetching cuisines:', error))
     },
 
-    getDiets() {
+    async getDiets() {
         const { setDiets } = get();
         axios
             .get(`${URL}/diets`)
@@ -95,42 +92,11 @@ export const useRecipeStore = create<recipeStoreType>((set, get) => ({
             .catch((error) => console.error('Error fetching diets:', error))
     },
 
-    async getImage(imageName) {
-        try {
-            const response = await axios.get(`${URL}/uploads/${imageName}`, { responseType: 'blob' });
-            const blob = response.data;
-
-            // Save the blob (image) to a specific folder with its name
-            const url = window.URL.createObjectURL(new Blob([blob]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', `${DOWNLOAD_FOLDER}${imageName}`);
-            document.body.appendChild(link);
-            link.click();
-
-            // Clean up
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-
-            return blob;
-        } catch (error) {
-            console.error('Error fetching image:', error);
-            return new Blob(); // Return an empty Blob on error
-        }
-    },
-
-
-
     //POST
     async addRecipe(recipeForm: RecipeFormType) {
         try {
-
             axios
-                .post(`${URL}/recipes`, recipeForm, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data', // Use multipart/form-data for FormData
-                    },
-                })
+                .post(`${URL}/recipes`, recipeForm,)
                 .then(({ data }) => console.log('Recipe added successfully:', data))
         } catch (error) {
             console.error('Error adding recipe:', error);

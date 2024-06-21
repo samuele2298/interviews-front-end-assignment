@@ -1,17 +1,31 @@
 'use client'
+
 import { useState, useEffect, ChangeEvent } from 'react';
-import { useSearchStore } from '@/store/searchStore'; // Adjust import path based on your project structure
-import { RecipeFilterType } from '@/types/api';
-import Navbar from '@/components/Navbar';
-import RecipeSearchCard from '@/components/RecipeCard';
-import { useRecipeStore } from '@/store/recipeStore';
+import { useSearchStore } from '@/src/store/searchStore';
+import { CuisineType, DietType, DifficultyType, RecipeFilterType } from '@/src/types/api';
+import Navbar from '@/src/components/Navbar';
+import RecipeSearchCard from '@/src/components/RecipeCard';
+import { useRecipeStore } from '@/src/store/recipeStore';
 import { FaSyncAlt } from 'react-icons/fa';
 
+const RECIPE_PER_PAGE_LIMIT = 50;
+const PAGE_PER_SEARCH = 1;
+
 const RecipesSearchPage = () => {
-    const { searchResults, getResults, filter, setFilter } = useSearchStore();
+    const { searchResults, getResults } = useSearchStore();
     const { difficulties, diets, cuisines, getCuisines, getDiets, getDifficulties } = useRecipeStore();
 
-    const [filters, setFilters] = useState<RecipeFilterType>(filter);
+    const [filters, setFilters] = useState<RecipeFilterType>(
+        {
+            _page: PAGE_PER_SEARCH,
+            _limit: RECIPE_PER_PAGE_LIMIT,
+            q: 'pizza',
+            cuisineId: '',
+            difficultyId: '',
+            dietId: '',
+            _expand: []
+        }
+    );
 
     useEffect(() => {
         // Initial fetches for filters
@@ -19,12 +33,14 @@ const RecipesSearchPage = () => {
         getDiets();
         getDifficulties();
 
+        // Every time the components update it update the search
         getResults(filters);
 
     }, [getCuisines, getDiets, getDifficulties, filters, getResults]);
 
 
 
+    //Handler for change in the filter
     const handleQChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
         setFilters(prevFilters => ({
@@ -32,7 +48,6 @@ const RecipesSearchPage = () => {
             q: prevFilters.q === value ? '' : value,
         }));
     };
-
 
     const handleCuisineChange = (cuisineId: string) => {
         setFilters(prevFilters => ({
@@ -58,22 +73,13 @@ const RecipesSearchPage = () => {
     // Handler for resetting all filters
     const handleReset = () => {
         setFilters({
-            _page: 1,
-            _limit: 10,
+            _page: PAGE_PER_SEARCH, //Not implemented the multiple page yet
+            _limit: RECIPE_PER_PAGE_LIMIT,
             q: '',
             cuisineId: '',
             dietId: '',
             difficultyId: '',
-            _expand: [],
-        });
-        setFilter({
-            _page: 1,
-            _limit: 10,
-            q: '',
-            cuisineId: '',
-            dietId: '',
-            difficultyId: '',
-            _expand: [],
+            _expand: [], //Not implemented the using of the expanded
         });
     };
 
@@ -113,7 +119,7 @@ const RecipesSearchPage = () => {
                         <div>
                             <label className="block font-bold mb-3 ml-2">Cuisine Preference</label>
                             <div className="flex flex-wrap ">
-                                {cuisines.map(cuisine => (
+                                {cuisines.map((cuisine: CuisineType) => (
                                     <div key={cuisine.id} className="flex items-center space-x-2 mb-1">
                                         <input
                                             type="checkbox"
@@ -141,7 +147,7 @@ const RecipesSearchPage = () => {
                         <div className="mb-6">
                             <label className="block font-bold mb-3 ml-2">Diet Preference</label>
                             <div className="flex flex-wrap">
-                                {diets.map(diet => (
+                                {diets.map((diet: DietType) => (
                                     <div key={diet.id} className="flex items-center space-x-2 mb-1">
                                         <input
                                             type="checkbox"
@@ -169,7 +175,7 @@ const RecipesSearchPage = () => {
                         <div>
                             <label className="block font-bold mb-3 ml-2">Difficulty Level</label>
                             <div className="flex flex-wrap">
-                                {difficulties.map(difficulty => (
+                                {difficulties.map((difficulty: DifficultyType) => (
                                     <div key={difficulty.id} className="flex items-center space-x-2 mb-1">
                                         <input
                                             type="checkbox"

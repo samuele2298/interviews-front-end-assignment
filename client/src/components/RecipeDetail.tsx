@@ -1,6 +1,8 @@
+'use client'
+
 import React, { useEffect } from 'react';
-import { RecipeType } from '../types/api'; // Importing the Recipe interface with an alias
-import { useRecipeStore } from '@/store/recipeStore';
+import { CuisineType, DietType, DifficultyType, RecipeType } from '../types/api'; // Importing the Recipe interface with an alias
+import { useRecipeStore } from '@/src/store/recipeStore';
 
 interface RecipeProps {
     recipe: RecipeType;
@@ -31,17 +33,17 @@ const RecipeDetailComponent: React.FC<RecipeProps> = ({ recipe }) => {
                     <span
                         className="bg-white text-orange-500 px-4 py-1 md:py-4 rounded-full shadow-lg hover:scale-105 transform transition duration-300 mr-2 mb-2"
                     >
-                        Cuisine: {cuisines.find(cuisine => cuisine.id === recipe.cuisineId)?.name}
+                        Cuisine: {cuisines.find((cuisine: CuisineType) => cuisine.id === recipe.cuisineId)?.name}
                     </span>
                     <span
                         className="bg-white text-orange-500  px-4 py-1 md:py-4 rounded-full shadow-lg hover:scale-105 transform transition duration-300 mr-2 mb-2"
                     >
-                        Difficulty: {difficulties.find(difficulty => difficulty.id === recipe.difficultyId)?.name}
+                        Difficulty: {difficulties.find((difficulty: DifficultyType) => difficulty.id === recipe.difficultyId)?.name}
                     </span>
                     <span
                         className="bg-white text-orange-500 px-4 py-1 md:py-4 rounded-full shadow-lg  hover:scale-105 transform transition duration-300 mr-2 mb-2"
                     >
-                        Diet: {diets.find(diet => diet.id === recipe.dietId)?.name}
+                        Diet: {diets.find((diet: DietType) => diet.id === recipe.dietId)?.name}
                     </span>
                 </div>
                 {/* Ingredients */}
@@ -77,7 +79,7 @@ const RecipeDetailComponent: React.FC<RecipeProps> = ({ recipe }) => {
             <div className="md:w-1/3 mb-4 md:mb-0 flex justify-center">
                 <div className="relative w-full h-0" style={{ paddingBottom: '100%' }}>
                     <img
-                        src={`/upload_images/${recipe.image}`}
+                        src={`/recipe_images/${recipe.image}`}
                         alt={recipe.name}
                         className="absolute inset-0 w-full h-full object-cover rounded-lg"
                     />

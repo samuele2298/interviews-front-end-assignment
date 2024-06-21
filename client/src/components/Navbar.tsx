@@ -1,4 +1,5 @@
 'use client'
+
 import { useRouter } from 'next/navigation'
 
 const Navbar = () => {
@@ -16,6 +17,7 @@ const Navbar = () => {
     const handleSearchPage = () => {
         router.push('/search');
     };
+
     return (
         <nav className="bg-white p-2 flex justify-between items-center">
 

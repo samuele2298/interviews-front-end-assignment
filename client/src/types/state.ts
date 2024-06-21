@@ -2,10 +2,10 @@ import {
     CuisineType,
     DifficultyType,
     DietType,
-    CommentType,
     RecipeType,
     RecipeFilterType,
 } from "./api";
+
 import { CommentFormType, RecipeFormType } from "./form";
 
 export interface recipeStoreType {
@@ -36,9 +36,9 @@ export interface recipeStoreType {
     getCuisines: () => void;
     getDiets: () => void;
     getRecipes: () => Promise<void>;
-    getImage: (imageName: string) => Promise<Blob>;
     getRecipe: (id: string) => void;
 
+    //Add functions
     addComment: (recipeId: string, commentForm: CommentFormType) => void;
     addRecipe: (recipe: RecipeFormType) => void;
 }
@@ -46,15 +46,10 @@ export interface recipeStoreType {
 
 export interface searchStoreType {
     //State
-    filter: RecipeFilterType;
     searchResults: RecipeType[] | [];
-    isLoading: Boolean,
 
     //Setter functions
-    setFilter: (filter: RecipeFilterType) => void;
     setResults: (searchResults: RecipeType[]) => void;
-
-    setLoading: (isLoading: Boolean) => void;
 
     //Getter functions
     getResults: (filter: RecipeFilterType) => Promise<void>;

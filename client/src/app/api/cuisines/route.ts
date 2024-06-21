@@ -1,7 +1,10 @@
 
 import { NextResponse } from 'next/server';
-import { CuisineType } from '../../../types/api';
-import db from '../../../../public/db.json'; // Assuming db.json is in the root or accessible
+import { CuisineType } from '@/src/types/api';
+const db = require('@/public/db.json');
+
+
+// GET Handler to fetch cuisines  
 
 export async function GET() {
     try {

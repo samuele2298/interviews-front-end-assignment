@@ -2,9 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useRecipeStore } from '@/store/recipeStore'; // Adjust import path based on your project structure
-import { RecipeFormType } from '@/types/form';
-import Navbar from '@/components/Navbar';
+
+import { useRecipeStore } from '@/src/store/recipeStore';
+import { RecipeFormType } from '@/src/types/form';
+
+import Navbar from '@/src/components/Navbar';
+import { CuisineType, DietType, DifficultyType } from '@/src/types/api';
 
 const AddRecipe = () => {
     const router = useRouter();
@@ -13,6 +16,7 @@ const AddRecipe = () => {
 
 
     useEffect(() => {
+        //Fetch cuisines, diets and difficulties
         getDiets();
         getCuisines();
         getDifficulties();
@@ -26,7 +30,7 @@ const AddRecipe = () => {
         cuisineId: '',
         dietId: '',
         difficultyId: '',
-        image: 'prova.jpg',
+        image: 'prova.jpg',//Not implemented the image manager for send image but i leave a placeholder string
     });
     const [errors, setErrors] = useState({
         name: '',
@@ -38,7 +42,7 @@ const AddRecipe = () => {
         image: '',
     });
 
-    const handleChangeName = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChangeNameAndInstruction = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setRecipeForm(prev => ({
             ...prev,
@@ -84,33 +88,51 @@ const AddRecipe = () => {
     //SUBMIT
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(recipeForm);
 
         try {
+            // Reset previous errors
+            setErrors({
+                name: '',
+                ingredients: '',
+                instructions: '',
+                cuisineId: '',
+                dietId: '',
+                difficultyId: '',
+                image: '',
+            });
+
             // Basic form validation
             const validationErrors: any = {};
-            if (!recipeForm.name) validationErrors.name = 'Name is required';
-            if (recipeForm.ingredients.length === 0) validationErrors.ingredients = 'At least one ingredient is required';
-            if (!recipeForm.instructions) validationErrors.instructions = 'Instructions are required';
-            if (!recipeForm.cuisineId) validationErrors.cuisineId = 'Cuisine is required';
-            if (!recipeForm.dietId) validationErrors.dietId = 'Diet is required';
-            if (!recipeForm.difficultyId) validationErrors.difficultyId = 'Difficulty level is required';
-
-
-            // If there are validation errors, handle them appropriately
-            if (Object.keys(validationErrors).length > 0) {
-                // Handle validation errors (e.g., show error messages)
-                console.error('Validation errors:', validationErrors);
-                return; // Exit early if there are validation errors
+            if (!recipeForm.name || recipeForm.name === '') {
+                validationErrors.name = 'Name is required';
+            }
+            if (recipeForm.ingredients.length === 0) {
+                validationErrors.ingredients = 'At least one ingredient is required';
+            }
+            if (!recipeForm.instructions) {
+                validationErrors.instructions = 'Instructions are required';
+            }
+            if (!recipeForm.cuisineId) {
+                validationErrors.cuisineId = 'Cuisine is required';
+            }
+            if (!recipeForm.dietId) {
+                validationErrors.dietId = 'Diet is required';
+            }
+            if (!recipeForm.difficultyId) {
+                validationErrors.difficultyId = 'Difficulty level is required';
             }
 
+            // If there are validation errors, update state and exit early
+            if (Object.keys(validationErrors).length > 0) {
+                setErrors(validationErrors);
+                return;
+            }
+
+            // If validation passes, proceed with adding recipe
             addRecipe(recipeForm);
 
             // Redirect to recipes page or any other route after successful submission
-            router.push('/recipe');
-
-
-
+            router.push('/search');
 
         } catch (error) {
             console.error('Error adding recipe:', error);
@@ -133,7 +155,7 @@ const AddRecipe = () => {
                                     id="name"
                                     name="name"
                                     value={recipeForm.name}
-                                    onChange={handleChangeName}
+                                    onChange={handleChangeNameAndInstruction}
                                     className={`w-full border border-gray-300 rounded px-3 py-2 focus:outline-none ${errors.name && 'border-red-500'}`}
                                 />
                                 {errors.name && <p className="text-red-500">{errors.name}</p>}
@@ -146,7 +168,7 @@ const AddRecipe = () => {
                                     id="instructions"
                                     name="instructions"
                                     value={recipeForm.instructions}
-                                    onChange={handleChangeName}
+                                    onChange={handleChangeNameAndInstruction}
                                     className={`w-full border border-gray-300 rounded px-3 py-2 focus:outline-none ${errors.instructions && 'border-red-500'}`}
                                 />
                                 {errors.instructions && <p className="text-red-500">{errors.instructions}</p>}
@@ -170,7 +192,7 @@ const AddRecipe = () => {
                                         className={`w-full border border-gray-300 rounded px-3 py-2 focus:outline-none ${errors.cuisineId && 'border-red-500'}`}
                                     >
                                         <option value="">Select Cuisine</option>
-                                        {cuisines.map(cuisine => (
+                                        {cuisines.map((cuisine: CuisineType) => (
                                             <option key={cuisine.id} value={cuisine.id}>{cuisine.name}</option>
                                         ))}
                                     </select>
@@ -188,7 +210,7 @@ const AddRecipe = () => {
                                         className={`w-full border border-gray-300 rounded px-3 py-2 focus:outline-none ${errors.dietId && 'border-red-500'}`}
                                     >
                                         <option value="">Select Diet</option>
-                                        {diets.map(diet => (
+                                        {diets.map((diet: DietType) => (
                                             <option key={diet.id} value={diet.id}>{diet.name}</option>
                                         ))}
                                     </select>
@@ -206,7 +228,7 @@ const AddRecipe = () => {
                                         className={`w-full border border-gray-300 rounded px-3 py-2 focus:outline-none ${errors.difficultyId && 'border-red-500'}`}
                                     >
                                         <option value="">Select Difficulty</option>
-                                        {difficulties.map(difficulty => (
+                                        {difficulties.map((difficulty: DifficultyType) => (
                                             <option key={difficulty.id} value={difficulty.id}>{difficulty.name}</option>
                                         ))}
                                     </select>

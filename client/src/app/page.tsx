@@ -1,8 +1,10 @@
 'use client'
+
 import React from 'react';
 import { useRouter } from 'next/navigation'
+
 const WelcomePage = () => {
-    const router = useRouter(); // Initialize the router
+    const router = useRouter();
 
     const handleExploreClick = () => {
         router.push('/recipe');
@@ -18,7 +20,7 @@ const WelcomePage = () => {
                 </div>
 
                 {/* Right Column: Title and Buttons */}
-                <div className=" flex-col  justify-center space-y-6">
+                <div className=" flex-col justify-center space-y-6">
 
                     {/* Title */}
                     <h1 className="text-6xl md:text-8xl font-bold text-white">Recipe4u</h1>
@@ -27,7 +29,6 @@ const WelcomePage = () => {
                     <button
                         onClick={handleExploreClick}
                         className="bg-white text-orange-500 px-8 py-4 rounded-full shadow-md hover:scale-105 transform transition duration-300"
-                        style={{ background: 'white', color: 'orange' }}
                     >
                         Explore
                     </button>

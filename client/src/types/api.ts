@@ -1,5 +1,4 @@
 
-
 // Define a type for the expand parameter
 type ExpandType = 'difficulty' | 'cuisine' | 'diet';
 
@@ -49,9 +48,8 @@ export interface RecipeType {
     difficultyId: string;
     image: string;
 
-
+    //Optional for attach the comments
     comments?: CommentType[];
-
 
     //Optional type for the expand_  
     difficulty?: DifficultyType;
