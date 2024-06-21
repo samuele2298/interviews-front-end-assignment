@@ -10,7 +10,7 @@ Ho usato:
 
 ## Demo
 
-https://recipeboook.vercel.app/
+https://vercel
 
 ## Installation
 
